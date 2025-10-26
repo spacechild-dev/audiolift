@@ -81,10 +81,11 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 // Update badge function
 function updateBadge(tabId, enabled) {
   if (enabled) {
-    chrome.action.setBadgeText({ text: 'ON', tabId });
-    chrome.action.setBadgeBackgroundColor({ color: '#667eea', tabId });
+    chrome.action.setBadgeText({ text: '●', tabId });
+    chrome.action.setBadgeBackgroundColor({ color: '#34a853', tabId }); // Green
   } else {
-    chrome.action.setBadgeText({ text: '', tabId });
+    chrome.action.setBadgeText({ text: '●', tabId });
+    chrome.action.setBadgeBackgroundColor({ color: '#ea4335', tabId }); // Red
   }
 }
 

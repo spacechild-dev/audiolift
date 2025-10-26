@@ -57,6 +57,9 @@ class AudioLiftUI {
   }
 
   async init() {
+    // Initialize theme system (hybrid: system + chrome + manual)
+    await this.initTheme();
+
     // Detect popup vs side panel mode
     this.detectMode();
 
@@ -176,6 +179,14 @@ class AudioLiftUI {
     if (advancedBtn) {
       advancedBtn.addEventListener('click', () => {
         chrome.sidePanel.open({ windowId: chrome.windows.WINDOW_ID_CURRENT });
+      });
+    }
+
+    // Theme toggle button
+    const themeBtn = document.getElementById('themeBtn');
+    if (themeBtn) {
+      themeBtn.addEventListener('click', () => {
+        this.toggleTheme();
       });
     }
 
@@ -444,6 +455,94 @@ class AudioLiftUI {
       };
       listEl.appendChild(btn);
     });
+  }
+
+  // ========== Theme System (Hybrid: System + Chrome + Manual) ==========
+
+  async initTheme() {
+    // Load saved theme preference
+    const result = await chrome.storage.local.get(['themePreference']);
+    const savedTheme = result.themePreference; // 'light', 'dark', or 'auto' (undefined = auto)
+
+    if (savedTheme === 'light') {
+      document.body.classList.add('light-mode');
+      this.updateThemeButton('light');
+    } else if (savedTheme === 'dark') {
+      document.body.classList.add('dark-mode');
+      this.updateThemeButton('dark');
+    } else {
+      // Auto mode: try Chrome theme API first, then system preference
+      await this.detectAutoTheme();
+      this.updateThemeButton('auto');
+    }
+  }
+
+  async detectAutoTheme() {
+    // Try to detect Chrome's theme (if API available)
+    try {
+      // Chrome doesn't have a direct theme API, but we can check system preference
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+      if (prefersDark) {
+        // System is dark, but don't add class (let CSS @media handle it)
+        // Or add class to override
+        // For now, let CSS media query handle it naturally
+      }
+    } catch (e) {
+      console.log('Theme detection not available:', e);
+    }
+  }
+
+  async toggleTheme() {
+    // Cycle through: auto → light → dark → auto
+    const currentTheme = this.getCurrentTheme();
+
+    let nextTheme;
+    if (currentTheme === 'auto' || !currentTheme) {
+      nextTheme = 'light';
+    } else if (currentTheme === 'light') {
+      nextTheme = 'dark';
+    } else {
+      nextTheme = 'auto';
+    }
+
+    // Remove all theme classes
+    document.body.classList.remove('light-mode', 'dark-mode');
+
+    // Apply new theme
+    if (nextTheme === 'light') {
+      document.body.classList.add('light-mode');
+    } else if (nextTheme === 'dark') {
+      document.body.classList.add('dark-mode');
+    }
+    // 'auto' = no class, let CSS @media handle it
+
+    // Save preference
+    await chrome.storage.local.set({ themePreference: nextTheme });
+
+    // Update button icon
+    this.updateThemeButton(nextTheme);
+  }
+
+  getCurrentTheme() {
+    if (document.body.classList.contains('light-mode')) return 'light';
+    if (document.body.classList.contains('dark-mode')) return 'dark';
+    return 'auto';
+  }
+
+  updateThemeButton(theme) {
+    const themeBtn = document.getElementById('themeBtn');
+    if (!themeBtn) return;
+
+    // Update button icon based on theme
+    const icons = {
+      light: '☀️',   // Sun for light mode
+      dark: '🌙',    // Moon for dark mode
+      auto: '🌓'     // Half moon for auto mode
+    };
+
+    themeBtn.textContent = icons[theme] || icons.auto;
+    themeBtn.title = `Theme: ${theme === 'auto' ? 'Auto (System)' : theme === 'light' ? 'Light' : 'Dark'} - Click to cycle`;
   }
 }
 
