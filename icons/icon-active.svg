@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="grad-active" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#34a853;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2d9348;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background circle -->
+  <circle cx="64" cy="64" r="60" fill="url(#grad-active)"/>
+
+  <!-- Equalizer bars -->
+  <rect x="35" y="45" width="8" height="38" rx="4" fill="white" opacity="0.9"/>
+  <rect x="52" y="35" width="8" height="58" rx="4" fill="white" opacity="0.9"/>
+  <rect x="69" y="28" width="8" height="72" rx="4" fill="white"/>
+  <rect x="86" y="40" width="8" height="48" rx="4" fill="white" opacity="0.9"/>
+
+  <!-- Arrow up indicator -->
+  <path d="M64 15 L70 25 L58 25 Z" fill="white" opacity="0.8"/>
+</svg>

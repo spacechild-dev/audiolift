@@ -36,7 +36,15 @@ inkscape -w 128 -h 128 icon.svg -o icon128.png
 The included `generate-icons.js` script attempts to use Chrome headless, but may not work on all systems.
 
 ## Current Files
+
+### Inactive State (Purple/Blue gradient)
 - `icon.svg` - Source SVG (gradient purple background with equalizer bars)
 - `icon16.png` - ✓ Generated (16x16)
 - `icon48.png` - ✓ Generated (48x48)
 - `icon128.png` - ✓ Generated (128x128)
+
+### Active State (Green gradient)
+- `icon-active.svg` - Source SVG (green gradient for active state)
+- `icon-active-16.png` - ✓ Generated (16x16)
+- `icon-active-48.png` - ✓ Generated (48x48)
+- `icon-active-128.png` - ✓ Generated (128x128)

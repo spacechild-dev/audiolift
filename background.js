@@ -78,15 +78,23 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   }
 });
 
-// Update badge function
+// Update badge and icon
 function updateBadge(tabId, enabled) {
-  if (enabled) {
-    chrome.action.setBadgeText({ text: ' ', tabId }); // Single space for small dot
-    chrome.action.setBadgeBackgroundColor({ color: '#34a853', tabId }); // Green dot
-  } else {
-    chrome.action.setBadgeText({ text: ' ', tabId }); // Single space for small dot
-    chrome.action.setBadgeBackgroundColor({ color: '#ea4335', tabId }); // Red dot
-  }
+  // No badge (too large, covers icon)
+  chrome.action.setBadgeText({ text: '', tabId });
+
+  // Change icon color based on state
+  const iconPath = enabled ? {
+    "16": "icons/icon-active-16.png",
+    "48": "icons/icon-active-48.png",
+    "128": "icons/icon-active-128.png"
+  } : {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  };
+
+  chrome.action.setIcon({ path: iconPath, tabId });
 }
 
 // Initialize
