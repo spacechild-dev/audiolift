@@ -89,7 +89,7 @@ function updateBadge(tabId, enabled) {
 }
 
 // Initialize
-chrome.runtime.onInstalled.addListener((details) => {
+chrome.runtime.onInstalled.addListener(async (details) => {
   if (details.reason === 'install') {
     // Set default settings
     chrome.storage.local.set({
@@ -106,8 +106,16 @@ chrome.runtime.onInstalled.addListener((details) => {
         compressionRelease: 0.25
       }
     });
-
-    // Enable side panel on all sites
-    chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
   }
+
+  // Enable side panel on all sites (always, not just on install)
+  await chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch(() => {
+    // Fallback if side panel API not available
+    console.log('Side panel API not available');
+  });
+});
+
+// Also set up side panel when extension starts
+chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch(() => {
+  console.log('Side panel API not available');
 });
