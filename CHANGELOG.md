@@ -5,6 +5,31 @@ All notable changes to AudioLift will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2025-10-26
+
+### Added
+- **Bit depth display** - Estimated from codec (24-bit for FLAC/WAV, 16-bit for others)
+- **Chrome Side Panel support** - Open AudioLift in sidebar
+- Right-click icon to open in side panel
+- Responsive width for side panel (360-480px)
+
+### Changed - UI Compactness
+- **Audio info panel** - Redesigned as compact 3x2 grid (was 5 rows)
+- **30-40% less vertical space** - Minimal scrolling needed
+- Shortened labels: "Sample Rate" → "Rate"
+- Compact values: "48000 Hz" → "48.0k"
+- Section padding: 12px → 8px
+- Preset buttons: 8px → 6px padding
+- EQ slider height: 100px → 80px
+- Font sizes reduced (11px → 10px, 12px → 9px)
+- Footer padding: 12px → 8px
+
+### Design
+- Container border-radius: 8px (rounded corners)
+- Subtle box shadow for depth
+- Background: #f1f3f4 (light gray)
+- More professional, compact look
+
 ## [2.0.0] - 2025-10-26
 
 ### Changed - BREAKING

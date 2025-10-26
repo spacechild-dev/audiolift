@@ -13,9 +13,10 @@ AudioLift is a Chrome extension that provides professional-grade audio enhanceme
   - Adjustable threshold, ratio, and knee
   - Perfect for movies with quiet dialogue and loud action scenes
 - **Real-time Processing**: Zero latency audio enhancement using Web Audio API
-- **Audio Information Display**: Real-time metadata panel showing:
-  - Sample rate (e.g., 48000 Hz)
+- **Audio Information Display**: Compact real-time metadata panel showing:
+  - Sample rate (e.g., 48.0k Hz)
   - Channel configuration (Mono/Stereo)
+  - Bit depth (16-bit/24-bit, estimated from codec)
   - Codec (MP3, AAC, Opus, Vorbis, FLAC, etc.)
   - Bitrate estimation
   - Duration (mm:ss format)
@@ -59,11 +60,12 @@ AudioLift is a Chrome extension that provides professional-grade audio enhanceme
 - **Persistent**: Settings saved across browser sessions
 
 ### User Experience
-- **Minimal UI**: Clean, modern interface with gradient design
+- **Ultra-Compact UI**: Chrome minimal design, 30-40% less space
+- **Side Panel Support**: Open in Chrome sidebar for persistent access
 - **Keyboard Shortcut**: Toggle on/off with `Cmd+Shift+A` (Mac) or `Ctrl+Shift+A` (Windows)
 - **Visual Feedback**: Badge indicator shows when active
-- **Real-time Values**: See exact dB values as you adjust
-- **Collapsible Sections**: Hide advanced controls when not needed
+- **Real-time Values**: See exact values as you adjust
+- **Minimal Scrolling**: All controls visible without scrolling
 
 ## Installation
 
@@ -247,9 +249,16 @@ Created with Claude Code.
 
 ## Version
 
-Current version: 2.0.0
+Current version: 2.1.0
 
 See [CHANGELOG.md](CHANGELOG.md) for version history.
+
+## What's New in 2.1
+
+- **Ultra-Compact UI** - 30-40% less vertical space, minimal scrolling
+- **Bit Depth Display** - See audio bit depth (16-bit/24-bit)
+- **Side Panel Support** - Open in Chrome sidebar for persistent access
+- **Rounded Corners** - Polished look with border-radius
 
 ## What's New in 2.0
 
