@@ -308,6 +308,7 @@ class AudioLift {
     const info = {
       sampleRate: null,
       channels: null,
+      bitDepth: null,
       codec: null,
       bitrate: null,
       duration: null
@@ -340,6 +341,8 @@ class AudioLift {
       const src = firstMedia.currentSrc || firstMedia.src;
       if (src) {
         info.codec = this.detectCodec(src, firstMedia);
+        // Estimate bit depth from codec
+        info.bitDepth = this.estimateBitDepth(info.codec);
       }
 
       // Estimate bitrate (very rough)
@@ -395,6 +398,26 @@ class AudioLift {
     }
 
     return 'Unknown';
+  }
+
+  estimateBitDepth(codec) {
+    // We can't actually detect bit depth from Web Audio API
+    // But we can make educated guesses based on codec
+
+    const highQualityCodecs = ['FLAC', 'PCM/WAV'];
+    const mediumQualityCodecs = ['AAC', 'Opus'];
+    const lowerQualityCodecs = ['MP3', 'Vorbis'];
+
+    if (highQualityCodecs.includes(codec)) {
+      return '24-bit';
+    } else if (mediumQualityCodecs.includes(codec)) {
+      return '16-bit';
+    } else if (lowerQualityCodecs.includes(codec)) {
+      return '16-bit';
+    }
+
+    // For streaming services, assume 16-bit
+    return '16-bit';
   }
 }
 

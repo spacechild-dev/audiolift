@@ -106,5 +106,8 @@ chrome.runtime.onInstalled.addListener((details) => {
         compressionRelease: 0.25
       }
     });
+
+    // Enable side panel on all sites
+    chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
   }
 });

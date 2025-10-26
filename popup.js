@@ -296,21 +296,25 @@ class AudioLiftUI {
   updateAudioInfo(info) {
     const sampleRateEl = document.getElementById('sampleRate');
     const channelsEl = document.getElementById('channels');
+    const bitDepthEl = document.getElementById('bitDepth');
     const codecEl = document.getElementById('codec');
     const bitrateEl = document.getElementById('bitrate');
     const durationEl = document.getElementById('duration');
 
     if (sampleRateEl) {
-      sampleRateEl.textContent = info.sampleRate ? `${info.sampleRate} Hz` : '-';
+      sampleRateEl.textContent = info.sampleRate ? `${(info.sampleRate / 1000).toFixed(1)}k` : '-';
     }
     if (channelsEl) {
       channelsEl.textContent = info.channels || '-';
     }
+    if (bitDepthEl) {
+      bitDepthEl.textContent = info.bitDepth || '-';
+    }
     if (codecEl) {
-      codecEl.textContent = info.codec || 'Unknown';
+      codecEl.textContent = info.codec || '?';
     }
     if (bitrateEl) {
-      bitrateEl.textContent = info.bitrate || 'Unknown';
+      bitrateEl.textContent = info.bitrate || '?';
     }
     if (durationEl) {
       durationEl.textContent = info.duration || '-';
