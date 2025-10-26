@@ -12,6 +12,7 @@
     <div class="header">
       <div class="header-left">
         <h1>AudioLift</h1>
+        <button class="advanced-btn popup-only" id="advancedBtn" title="Open Advanced Controls in Side Panel">⚙️</button>
       </div>
       <label class="toggle-switch">
         <input type="checkbox" id="masterToggle">
@@ -86,24 +87,65 @@
         <input type="range" id="preamp" min="-10" max="10" step="0.5" value="0" class="slider">
       </div>
 
-      <!-- EQ Section -->
+      <!-- Spectrum Analyzer -->
       <div class="section">
-        <div class="section-title">Equalizer</div>
-        <div class="eq-container">
+        <div class="section-title">Spectrum Analyzer</div>
+        <canvas id="spectrumCanvas" width="344" height="60"></canvas>
+      </div>
+
+      <!-- 10-Band EQ Section -->
+      <div class="section">
+        <div class="section-title">10-Band Equalizer</div>
+        <div class="eq-container-10">
           <div class="eq-band">
-            <label class="eq-label">Bass</label>
-            <input type="range" id="bass" min="-12" max="12" step="0.5" value="0" class="slider vertical" orient="vertical">
-            <span class="eq-value" id="bassValue">0</span>
+            <label class="eq-label">32</label>
+            <input type="range" id="eq32" min="-12" max="12" step="0.5" value="0" class="slider vertical" orient="vertical">
+            <span class="eq-value" id="eq32Value">0</span>
           </div>
           <div class="eq-band">
-            <label class="eq-label">Mid</label>
-            <input type="range" id="mid" min="-12" max="12" step="0.5" value="0" class="slider vertical" orient="vertical">
-            <span class="eq-value" id="midValue">0</span>
+            <label class="eq-label">64</label>
+            <input type="range" id="eq64" min="-12" max="12" step="0.5" value="0" class="slider vertical" orient="vertical">
+            <span class="eq-value" id="eq64Value">0</span>
           </div>
           <div class="eq-band">
-            <label class="eq-label">Treble</label>
-            <input type="range" id="treble" min="-12" max="12" step="0.5" value="0" class="slider vertical" orient="vertical">
-            <span class="eq-value" id="trebleValue">0</span>
+            <label class="eq-label">125</label>
+            <input type="range" id="eq125" min="-12" max="12" step="0.5" value="0" class="slider vertical" orient="vertical">
+            <span class="eq-value" id="eq125Value">0</span>
+          </div>
+          <div class="eq-band">
+            <label class="eq-label">250</label>
+            <input type="range" id="eq250" min="-12" max="12" step="0.5" value="0" class="slider vertical" orient="vertical">
+            <span class="eq-value" id="eq250Value">0</span>
+          </div>
+          <div class="eq-band">
+            <label class="eq-label">500</label>
+            <input type="range" id="eq500" min="-12" max="12" step="0.5" value="0" class="slider vertical" orient="vertical">
+            <span class="eq-value" id="eq500Value">0</span>
+          </div>
+          <div class="eq-band">
+            <label class="eq-label">1k</label>
+            <input type="range" id="eq1k" min="-12" max="12" step="0.5" value="0" class="slider vertical" orient="vertical">
+            <span class="eq-value" id="eq1kValue">0</span>
+          </div>
+          <div class="eq-band">
+            <label class="eq-label">2k</label>
+            <input type="range" id="eq2k" min="-12" max="12" step="0.5" value="0" class="slider vertical" orient="vertical">
+            <span class="eq-value" id="eq2kValue">0</span>
+          </div>
+          <div class="eq-band">
+            <label class="eq-label">4k</label>
+            <input type="range" id="eq4k" min="-12" max="12" step="0.5" value="0" class="slider vertical" orient="vertical">
+            <span class="eq-value" id="eq4kValue">0</span>
+          </div>
+          <div class="eq-band">
+            <label class="eq-label">8k</label>
+            <input type="range" id="eq8k" min="-12" max="12" step="0.5" value="0" class="slider vertical" orient="vertical">
+            <span class="eq-value" id="eq8kValue">0</span>
+          </div>
+          <div class="eq-band">
+            <label class="eq-label">16k</label>
+            <input type="range" id="eq16k" min="-12" max="12" step="0.5" value="0" class="slider vertical" orient="vertical">
+            <span class="eq-value" id="eq16kValue">0</span>
           </div>
         </div>
       </div>
@@ -135,9 +177,32 @@
         </div>
       </div>
 
+      <!-- Advanced Features (Side Panel Only) -->
+      <div class="advanced-only">
+
+        <!-- Custom Presets -->
+        <div class="section">
+          <div class="section-title">Custom Presets</div>
+          <div class="custom-preset-controls">
+            <input type="text" id="presetName" placeholder="My Preset" class="preset-input">
+            <button class="btn-small" id="savePreset">💾 Save</button>
+            <button class="btn-small" id="deletePreset">🗑️ Delete</button>
+          </div>
+          <div id="customPresetList" class="custom-preset-list"></div>
+        </div>
+
+      </div>
+
       <!-- Footer Info -->
       <div class="footer-info">
-        Settings automatically saved per site
+        <div class="footer-text">Settings auto-saved per site</div>
+        <div class="footer-links">
+          <a href="#" class="footer-link" id="websiteLink" target="_blank" title="Visit daiquiri.dev">🌐 Website</a>
+          <span class="footer-separator">•</span>
+          <a href="#" class="footer-link" id="githubLink" target="_blank" title="GitHub Sponsors">💖 GitHub</a>
+          <span class="footer-separator">•</span>
+          <a href="#" class="footer-link" id="coffeeLink" target="_blank" title="Buy me a coffee">☕ Coffee</a>
+        </div>
       </div>
     </div>
 

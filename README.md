@@ -7,7 +7,11 @@ AudioLift is a Chrome extension that provides professional-grade audio enhanceme
 ## Features
 
 ### Audio Enhancement
-- **3-Band Equalizer**: Adjust Bass, Mid, and Treble independently (±12dB)
+- **10-Band Parametric Equalizer**: Professional-grade frequency control (±12dB per band)
+  - 32Hz, 64Hz, 125Hz, 250Hz, 500Hz, 1kHz, 2kHz, 4kHz, 8kHz, 16kHz
+  - Optimized filter types (lowshelf, peaking, highshelf)
+  - Precise audio sculpting for any content type
+- **Spectrum Analyzer**: Real-time visual frequency display (512 FFT, 20fps)
 - **Preamp/Gain**: Boost overall volume up to +10dB
 - **Dynamic Range Compression**: Reduce the difference between quiet and loud sounds
   - Adjustable threshold, ratio, and knee
@@ -114,20 +118,21 @@ Overall volume boost. Useful when content is generally too quiet.
 - Range: -10dB to +10dB
 - Tip: Start with +2-4dB for movies
 
-#### Bass (200Hz)
-Low frequencies - rumble, bass, drums
-- Range: -12dB to +12dB
-- Tip: Boost +4-6dB for better immersion
+#### 10-Band Equalizer
+Professional parametric EQ with 10 frequency bands:
 
-#### Mid (1000Hz)
-Mid frequencies - most vocals and instruments
-- Range: -12dB to +12dB
-- Tip: Boost +4-8dB for dialogue clarity
+- **32 Hz** (Lowshelf): Sub-bass, rumble, deep impact
+- **64 Hz**: Bass fundamentals, kick drums
+- **125 Hz**: Bass warmth, lower vocals
+- **250 Hz**: Body and warmth, male vocals
+- **500 Hz**: Lower midrange, fullness
+- **1 kHz**: Presence, vocal clarity
+- **2 kHz**: Upper midrange, speech intelligibility
+- **4 kHz**: Clarity, definition, sibilance
+- **8 kHz**: Brilliance, air
+- **16 kHz** (Highshelf): Ultra-high frequencies, sparkle
 
-#### Treble (4000Hz)
-High frequencies - clarity, detail, sibilance
-- Range: -12dB to +12dB
-- Tip: Boost +2-3dB for crisp audio
+Each band: -12dB to +12dB range
 
 #### Dynamic Range Compression
 
@@ -162,10 +167,12 @@ AudioLift uses the Web Audio API to process audio in real-time:
 
 1. Detects all `<audio>` and `<video>` elements on the page
 2. Creates an audio processing chain:
-   - Source → Preamp → Bass Filter → Mid Filter → Treble Filter → Compressor → Output
+   - Source → Preamp → 10 EQ Filters → Compressor → Analyser → Output
+   - 10-band EQ: 32Hz → 64Hz → 125Hz → 250Hz → 500Hz → 1kHz → 2kHz → 4kHz → 8kHz → 16kHz
 3. Uses BiquadFilterNode for EQ (lowshelf, peaking, highshelf)
 4. Uses DynamicsCompressorNode for compression
-5. All processing happens in real-time with zero latency
+5. Uses AnalyserNode for spectrum visualization
+6. All processing happens in real-time with zero latency
 
 ### Browser Compatibility
 
@@ -249,9 +256,17 @@ Created with Claude Code.
 
 ## Version
 
-Current version: 2.1.0
+Current version: 2.2.0
 
 See [CHANGELOG.md](CHANGELOG.md) for version history.
+
+## What's New in 2.2
+
+- **10-Band Parametric EQ** - Upgraded from 3-band to professional 10-band equalizer
+- **Spectrum Analyzer** - Real-time visual frequency display with dark mode support
+- **Custom Presets** - Save and load your favorite settings (side panel only)
+- **Advanced Features Panel** - Dedicated side panel for power users
+- All 20 presets updated with 10-band frequency tuning
 
 ## What's New in 2.1
 

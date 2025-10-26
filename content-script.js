@@ -6,12 +6,20 @@ class AudioLift {
     this.audioContext = null;
     this.audioSources = new WeakMap(); // WeakMap for auto garbage collection
     this.processedElements = new WeakSet(); // Track processing attempts
+    this.analyser = null; // Global analyser for spectrum data
     this.settings = {
       enabled: false,
       preamp: 0,
-      bass: 0,
-      mid: 0,
-      treble: 0,
+      eq32: 0,
+      eq64: 0,
+      eq125: 0,
+      eq250: 0,
+      eq500: 0,
+      eq1k: 0,
+      eq2k: 0,
+      eq4k: 0,
+      eq8k: 0,
+      eq16k: 0,
       compressionThreshold: -24,
       compressionRatio: 3,
       compressionKnee: 30,
@@ -37,6 +45,9 @@ class AudioLift {
       } else if (message.type === 'getAudioInfo') {
         const audioInfo = this.getAudioInfo();
         sendResponse({ audioInfo });
+      } else if (message.type === 'getSpectrumData') {
+        const spectrumData = this.getSpectrumData();
+        sendResponse({ data: spectrumData });
       }
       return true;
     });
@@ -145,10 +156,23 @@ class AudioLift {
 
         // Connect the chain - ALWAYS connected, NEVER disconnected
         source.connect(nodes.preamp);
-        nodes.preamp.connect(nodes.bassFilter);
-        nodes.bassFilter.connect(nodes.midFilter);
-        nodes.midFilter.connect(nodes.trebleFilter);
-        nodes.trebleFilter.connect(nodes.compressor);
+        nodes.preamp.connect(nodes.eq32);
+        nodes.eq32.connect(nodes.eq64);
+        nodes.eq64.connect(nodes.eq125);
+        nodes.eq125.connect(nodes.eq250);
+        nodes.eq250.connect(nodes.eq500);
+        nodes.eq500.connect(nodes.eq1k);
+        nodes.eq1k.connect(nodes.eq2k);
+        nodes.eq2k.connect(nodes.eq4k);
+        nodes.eq4k.connect(nodes.eq8k);
+        nodes.eq8k.connect(nodes.eq16k);
+        nodes.eq16k.connect(nodes.compressor);
+
+        // Connect analyser (tap from compressor output for spectrum data)
+        if (this.analyser) {
+          nodes.compressor.connect(this.analyser);
+        }
+
         nodes.compressor.connect(this.audioContext.destination);
 
         // Store reference using WeakMap
@@ -219,30 +243,88 @@ class AudioLift {
     // Preamp (gain)
     const preamp = ctx.createGain();
 
-    // Bass (low shelf filter)
-    const bassFilter = ctx.createBiquadFilter();
-    bassFilter.type = 'lowshelf';
-    bassFilter.frequency.value = 200;
+    // 32Hz (low shelf filter)
+    const eq32 = ctx.createBiquadFilter();
+    eq32.type = 'lowshelf';
+    eq32.frequency.value = 32;
+    eq32.Q.value = 1.0;
 
-    // Mid (peaking filter)
-    const midFilter = ctx.createBiquadFilter();
-    midFilter.type = 'peaking';
-    midFilter.frequency.value = 1000;
-    midFilter.Q.value = 1;
+    // 64Hz (peaking filter)
+    const eq64 = ctx.createBiquadFilter();
+    eq64.type = 'peaking';
+    eq64.frequency.value = 64;
+    eq64.Q.value = 1.0;
 
-    // Treble (high shelf filter)
-    const trebleFilter = ctx.createBiquadFilter();
-    trebleFilter.type = 'highshelf';
-    trebleFilter.frequency.value = 4000;
+    // 125Hz (peaking filter)
+    const eq125 = ctx.createBiquadFilter();
+    eq125.type = 'peaking';
+    eq125.frequency.value = 125;
+    eq125.Q.value = 1.0;
+
+    // 250Hz (peaking filter)
+    const eq250 = ctx.createBiquadFilter();
+    eq250.type = 'peaking';
+    eq250.frequency.value = 250;
+    eq250.Q.value = 1.0;
+
+    // 500Hz (peaking filter)
+    const eq500 = ctx.createBiquadFilter();
+    eq500.type = 'peaking';
+    eq500.frequency.value = 500;
+    eq500.Q.value = 1.0;
+
+    // 1kHz (peaking filter)
+    const eq1k = ctx.createBiquadFilter();
+    eq1k.type = 'peaking';
+    eq1k.frequency.value = 1000;
+    eq1k.Q.value = 1.0;
+
+    // 2kHz (peaking filter)
+    const eq2k = ctx.createBiquadFilter();
+    eq2k.type = 'peaking';
+    eq2k.frequency.value = 2000;
+    eq2k.Q.value = 1.0;
+
+    // 4kHz (peaking filter)
+    const eq4k = ctx.createBiquadFilter();
+    eq4k.type = 'peaking';
+    eq4k.frequency.value = 4000;
+    eq4k.Q.value = 1.0;
+
+    // 8kHz (peaking filter)
+    const eq8k = ctx.createBiquadFilter();
+    eq8k.type = 'peaking';
+    eq8k.frequency.value = 8000;
+    eq8k.Q.value = 1.0;
+
+    // 16kHz (high shelf filter)
+    const eq16k = ctx.createBiquadFilter();
+    eq16k.type = 'highshelf';
+    eq16k.frequency.value = 16000;
+    eq16k.Q.value = 1.0;
 
     // Compressor (dynamics)
     const compressor = ctx.createDynamicsCompressor();
 
+    // Create analyser for spectrum data (only once)
+    if (!this.analyser) {
+      this.analyser = ctx.createAnalyser();
+      this.analyser.fftSize = 512; // Small FFT for performance
+      this.analyser.smoothingTimeConstant = 0.8;
+    }
+
     return {
       preamp,
-      bassFilter,
-      midFilter,
-      trebleFilter,
+      eq32,
+      eq64,
+      eq125,
+      eq250,
+      eq500,
+      eq1k,
+      eq2k,
+      eq4k,
+      eq8k,
+      eq16k,
       compressor
     };
   }
@@ -275,9 +357,16 @@ class AudioLift {
     if (!this.settings.enabled) {
       // Bypass mode - no processing
       nodes.preamp.gain.value = 1;
-      nodes.bassFilter.gain.value = 0;
-      nodes.midFilter.gain.value = 0;
-      nodes.trebleFilter.gain.value = 0;
+      nodes.eq32.gain.value = 0;
+      nodes.eq64.gain.value = 0;
+      nodes.eq125.gain.value = 0;
+      nodes.eq250.gain.value = 0;
+      nodes.eq500.gain.value = 0;
+      nodes.eq1k.gain.value = 0;
+      nodes.eq2k.gain.value = 0;
+      nodes.eq4k.gain.value = 0;
+      nodes.eq8k.gain.value = 0;
+      nodes.eq16k.gain.value = 0;
       nodes.compressor.threshold.value = -24;
       nodes.compressor.ratio.value = 1;
       nodes.compressor.knee.value = 30;
@@ -287,10 +376,17 @@ class AudioLift {
     // Preamp (convert dB to gain)
     nodes.preamp.gain.value = this.dbToGain(this.settings.preamp);
 
-    // EQ settings (dB)
-    nodes.bassFilter.gain.value = this.settings.bass;
-    nodes.midFilter.gain.value = this.settings.mid;
-    nodes.trebleFilter.gain.value = this.settings.treble;
+    // 10-band EQ settings (dB)
+    nodes.eq32.gain.value = this.settings.eq32;
+    nodes.eq64.gain.value = this.settings.eq64;
+    nodes.eq125.gain.value = this.settings.eq125;
+    nodes.eq250.gain.value = this.settings.eq250;
+    nodes.eq500.gain.value = this.settings.eq500;
+    nodes.eq1k.gain.value = this.settings.eq1k;
+    nodes.eq2k.gain.value = this.settings.eq2k;
+    nodes.eq4k.gain.value = this.settings.eq4k;
+    nodes.eq8k.gain.value = this.settings.eq8k;
+    nodes.eq16k.gain.value = this.settings.eq16k;
 
     // Compressor settings
     nodes.compressor.threshold.value = this.settings.compressionThreshold;
@@ -418,6 +514,19 @@ class AudioLift {
 
     // For streaming services, assume 16-bit
     return '16-bit';
+  }
+
+  getSpectrumData() {
+    if (!this.analyser) {
+      return null;
+    }
+
+    const bufferLength = this.analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+    this.analyser.getByteFrequencyData(dataArray);
+
+    // Return as regular array for JSON serialization
+    return Array.from(dataArray);
   }
 }
 

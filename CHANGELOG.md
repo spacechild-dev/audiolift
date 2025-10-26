@@ -5,6 +5,44 @@ All notable changes to AudioLift will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2025-10-26
+
+### Changed - BREAKING
+- **Upgraded from 3-band to 10-band equalizer** - More precise frequency control
+- Complete audio processing chain rewrite for 10 independent frequency bands
+- Settings structure changed (removed bass/mid/treble, added eq32-eq16k)
+
+### Added
+- **10-band parametric equalizer** with frequencies:
+  - 32 Hz (lowshelf)
+  - 64 Hz, 125 Hz, 250 Hz, 500 Hz (peaking)
+  - 1 kHz, 2 kHz, 4 kHz, 8 kHz (peaking)
+  - 16 kHz (highshelf)
+- **Real-time spectrum analyzer** - Visual frequency display (visible in popup)
+- Canvas-based spectrum visualization (512 FFT, 20fps)
+- Dark mode support for spectrum analyzer
+- All 20 presets updated with 10-band values
+
+### Advanced Features (Side Panel Only)
+- **Custom preset save/load** - Save your favorite settings
+- Advanced button (⚙️) in popup to open side panel
+- Popup-only and advanced-only UI sections
+
+### Technical
+- Added AnalyserNode to audio processing chain
+- `getSpectrumData` message handler for real-time spectrum data
+- 10 BiquadFilterNodes with optimized Q values (1.0)
+- Updated storage schema for 10-band settings
+- Spectrum data serialization for popup display
+- Mode detection (popup vs side panel)
+
+### UI/UX
+- Spectrum analyzer visible in main popup (60px height)
+- Compact 10-band EQ layout with vertical sliders
+- Each band shows frequency label and value
+- Removed duplicate 5-band EQ from advanced section
+- Advanced features (custom presets) only in side panel
+
 ## [2.1.0] - 2025-10-26
 
 ### Added
