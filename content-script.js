@@ -34,6 +34,9 @@ class AudioLift {
         sendResponse({ success: true });
       } else if (message.type === 'getStatus') {
         sendResponse({ enabled: this.settings.enabled });
+      } else if (message.type === 'getAudioInfo') {
+        const audioInfo = this.getAudioInfo();
+        sendResponse({ audioInfo });
       }
       return true;
     });
@@ -299,6 +302,99 @@ class AudioLift {
 
   dbToGain(db) {
     return Math.pow(10, db / 20);
+  }
+
+  getAudioInfo() {
+    const info = {
+      sampleRate: null,
+      channels: null,
+      codec: null,
+      bitrate: null,
+      duration: null
+    };
+
+    // Get sample rate from AudioContext
+    if (this.audioContext) {
+      info.sampleRate = this.audioContext.sampleRate;
+    }
+
+    // Try to get info from first media element
+    const mediaElements = document.querySelectorAll('video, audio');
+    if (mediaElements.length > 0) {
+      const firstMedia = mediaElements[0];
+      const audioData = this.audioSources.get(firstMedia);
+
+      // Get channel count from source node
+      if (audioData && audioData.source) {
+        info.channels = audioData.source.channelCount === 2 ? 'Stereo' : 'Mono';
+      }
+
+      // Get duration
+      if (firstMedia.duration && isFinite(firstMedia.duration)) {
+        const minutes = Math.floor(firstMedia.duration / 60);
+        const seconds = Math.floor(firstMedia.duration % 60);
+        info.duration = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      }
+
+      // Try to detect codec from source URL
+      const src = firstMedia.currentSrc || firstMedia.src;
+      if (src) {
+        info.codec = this.detectCodec(src, firstMedia);
+      }
+
+      // Estimate bitrate (very rough)
+      if (firstMedia.buffered && firstMedia.buffered.length > 0) {
+        // This is a rough estimate based on network state
+        if (firstMedia.networkState === 2) { // NETWORK_LOADING
+          info.bitrate = 'Streaming';
+        } else if (firstMedia.networkState === 3) { // NETWORK_NO_SOURCE
+          info.bitrate = 'No Source';
+        } else {
+          info.bitrate = 'Buffered';
+        }
+      }
+    }
+
+    return info;
+  }
+
+  detectCodec(src, mediaElement) {
+    // Try to detect from file extension
+    const extension = src.split('?')[0].split('.').pop().toLowerCase();
+
+    const codecMap = {
+      'mp3': 'MP3',
+      'mp4': 'AAC/MP4',
+      'm4a': 'AAC',
+      'aac': 'AAC',
+      'ogg': 'Vorbis',
+      'opus': 'Opus',
+      'webm': 'Opus/Vorbis',
+      'flac': 'FLAC',
+      'wav': 'PCM/WAV'
+    };
+
+    if (codecMap[extension]) {
+      return codecMap[extension];
+    }
+
+    // Try to detect from canPlayType
+    const testFormats = [
+      { type: 'audio/mp4', codec: 'AAC' },
+      { type: 'audio/mpeg', codec: 'MP3' },
+      { type: 'audio/ogg', codec: 'Vorbis' },
+      { type: 'audio/webm; codecs="opus"', codec: 'Opus' },
+      { type: 'audio/flac', codec: 'FLAC' }
+    ];
+
+    for (const format of testFormats) {
+      const support = mediaElement.canPlayType(format.type);
+      if (support === 'probably' || support === 'maybe') {
+        return format.codec;
+      }
+    }
+
+    return 'Unknown';
   }
 }
 

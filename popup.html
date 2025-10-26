@@ -8,131 +8,170 @@
 </head>
 <body>
   <div class="container">
-    <!-- Header with Toggle -->
+    <!-- Chrome-style Header -->
     <div class="header">
       <div class="header-left">
         <h1>AudioLift</h1>
-        <div class="version">v1.1.0</div>
       </div>
-      <label class="toggle-label">
-        <input type="checkbox" id="masterToggle" class="toggle-input">
-        <span class="toggle-slider"></span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="masterToggle">
+        <span class="toggle-track">
+          <span class="toggle-thumb"></span>
+        </span>
       </label>
     </div>
 
+    <!-- Audio Information Panel -->
+    <div id="audioInfo" class="audio-info hidden">
+      <div class="info-row">
+        <span class="info-label">Sample Rate</span>
+        <span class="info-value" id="sampleRate">-</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Channels</span>
+        <span class="info-value" id="channels">-</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Codec</span>
+        <span class="info-value" id="codec">-</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Bitrate</span>
+        <span class="info-value" id="bitrate">-</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Duration</span>
+        <span class="info-value" id="duration">-</span>
+      </div>
+    </div>
+
     <div id="controls" class="controls-container disabled">
-      <!-- Presets -->
-      <div class="preset-grid">
-        <button class="preset-btn" data-preset="flat">🎚️ Flat</button>
-        <button class="preset-btn" data-preset="movie">🎬 Movie</button>
-        <button class="preset-btn" data-preset="dialogue">🗣️ Dialogue</button>
-        <button class="preset-btn" data-preset="bassboost">🔊 Bass</button>
+      <!-- Presets Section -->
+      <div class="section">
+        <div class="section-title">Presets</div>
+        <div class="preset-grid">
+          <button class="preset-btn" data-preset="flat">Flat</button>
+          <button class="preset-btn" data-preset="audiophile">Audiophile</button>
+          <button class="preset-btn" data-preset="movie">Movie</button>
+          <button class="preset-btn" data-preset="dialogue">Dialogue</button>
+          <button class="preset-btn" data-preset="music">Music</button>
+          <button class="preset-btn" data-preset="rock">Rock</button>
+          <button class="preset-btn" data-preset="classical">Classical</button>
+          <button class="preset-btn" data-preset="jazz">Jazz</button>
+          <button class="preset-btn" data-preset="electronic">Electronic</button>
+          <button class="preset-btn" data-preset="hiphop">Hip Hop</button>
+          <button class="preset-btn" data-preset="metal">Metal</button>
+          <button class="preset-btn" data-preset="acoustic">Acoustic</button>
+          <button class="preset-btn" data-preset="podcast">Podcast</button>
+          <button class="preset-btn" data-preset="gaming">Gaming</button>
+          <button class="preset-btn" data-preset="night">Night</button>
+          <button class="preset-btn" data-preset="bassboost">Bass+</button>
+          <button class="preset-btn" data-preset="vocal">Vocal</button>
+          <button class="preset-btn" data-preset="cinematic">Cinematic</button>
+          <button class="preset-btn" data-preset="radio">Radio</button>
+          <button class="preset-btn" data-preset="lofi">Lo-Fi</button>
+        </div>
       </div>
 
-      <!-- Preamp -->
-      <div class="slider-control">
-        <div class="slider-header">
-          <span class="slider-label">Preamp</span>
-          <span class="slider-value" id="preampValue">+0 dB</span>
+      <!-- Preamp Section -->
+      <div class="section">
+        <div class="control-row">
+          <label class="control-label">Preamp</label>
+          <span class="control-value" id="preampValue">0 dB</span>
         </div>
         <input type="range" id="preamp" min="-10" max="10" step="0.5" value="0" class="slider">
       </div>
 
-      <!-- EQ Grid -->
-      <div class="eq-grid">
-        <div class="eq-control">
-          <div class="eq-label">Bass</div>
-          <input type="range" id="bass" min="-12" max="12" step="0.5" value="0" class="slider vertical" orient="vertical">
-          <div class="eq-value" id="bassValue">0</div>
-        </div>
-        <div class="eq-control">
-          <div class="eq-label">Mid</div>
-          <input type="range" id="mid" min="-12" max="12" step="0.5" value="0" class="slider vertical" orient="vertical">
-          <div class="eq-value" id="midValue">0</div>
-        </div>
-        <div class="eq-control">
-          <div class="eq-label">Treble</div>
-          <input type="range" id="treble" min="-12" max="12" step="0.5" value="0" class="slider vertical" orient="vertical">
-          <div class="eq-value" id="trebleValue">0</div>
-        </div>
-      </div>
-
-      <!-- Compression -->
-      <div class="compression-section">
-        <div class="section-header">
-          <span>Dynamic Compression</span>
-          <button class="help-btn" id="compressionHelp">?</button>
-        </div>
-        <div class="compression-grid">
-          <div class="compression-control">
-            <label class="compression-label" title="Level where compression starts. Lower = more compression. Try -35dB for dialogue, -24dB for movies.">
-              Threshold
-              <span class="compression-value" id="thresholdValue">-24</span>
-            </label>
-            <input type="range" id="threshold" min="-60" max="0" step="1" value="-24" class="slider small">
+      <!-- EQ Section -->
+      <div class="section">
+        <div class="section-title">Equalizer</div>
+        <div class="eq-container">
+          <div class="eq-band">
+            <label class="eq-label">Bass</label>
+            <input type="range" id="bass" min="-12" max="12" step="0.5" value="0" class="slider vertical" orient="vertical">
+            <span class="eq-value" id="bassValue">0</span>
           </div>
-          <div class="compression-control">
-            <label class="compression-label" title="How much to compress. Higher = more aggressive. Try 6:1 for dialogue, 3:1 for movies.">
-              Ratio
-              <span class="compression-value" id="ratioValue">3:1</span>
-            </label>
-            <input type="range" id="ratio" min="1" max="20" step="0.5" value="3" class="slider small">
+          <div class="eq-band">
+            <label class="eq-label">Mid</label>
+            <input type="range" id="mid" min="-12" max="12" step="0.5" value="0" class="slider vertical" orient="vertical">
+            <span class="eq-value" id="midValue">0</span>
           </div>
-          <div class="compression-control">
-            <label class="compression-label" title="Smoothness of compression. Higher = more natural. Try 30dB for smooth, 15dB for aggressive.">
-              Knee
-              <span class="compression-value" id="kneeValue">30</span>
-            </label>
-            <input type="range" id="knee" min="0" max="40" step="1" value="30" class="slider small">
+          <div class="eq-band">
+            <label class="eq-label">Treble</label>
+            <input type="range" id="treble" min="-12" max="12" step="0.5" value="0" class="slider vertical" orient="vertical">
+            <span class="eq-value" id="trebleValue">0</span>
           </div>
         </div>
       </div>
 
-      <!-- Auto-save info -->
-      <div class="auto-save-info">
-        <small>✨ Settings automatically save for each site</small>
+      <!-- Compression Section -->
+      <div class="section">
+        <div class="section-title">
+          Compression
+          <button class="help-icon" id="compressionHelp" title="Learn about compression">?</button>
+        </div>
+        <div class="compression-controls">
+          <div class="control-row">
+            <label class="control-label">Threshold</label>
+            <span class="control-value" id="thresholdValue">-24 dB</span>
+          </div>
+          <input type="range" id="threshold" min="-60" max="0" step="1" value="-24" class="slider">
+
+          <div class="control-row">
+            <label class="control-label">Ratio</label>
+            <span class="control-value" id="ratioValue">3:1</span>
+          </div>
+          <input type="range" id="ratio" min="1" max="20" step="0.5" value="3" class="slider">
+
+          <div class="control-row">
+            <label class="control-label">Knee</label>
+            <span class="control-value" id="kneeValue">30 dB</span>
+          </div>
+          <input type="range" id="knee" min="0" max="40" step="1" value="30" class="slider">
+        </div>
+      </div>
+
+      <!-- Footer Info -->
+      <div class="footer-info">
+        Settings automatically saved per site
       </div>
     </div>
 
     <!-- Help Modal -->
     <div id="helpModal" class="modal hidden">
+      <div class="modal-overlay"></div>
       <div class="modal-content">
         <div class="modal-header">
-          <h3>Dynamic Range Compression Guide</h3>
+          <h3>Dynamic Compression</h3>
           <button class="modal-close">&times;</button>
         </div>
         <div class="modal-body">
           <p><strong>What is compression?</strong></p>
-          <p>Compression reduces the difference between quiet and loud sounds, making dialogue easier to hear while preventing loud scenes from being too loud.</p>
+          <p>Compression reduces the difference between quiet and loud sounds, making dialogue easier to hear.</p>
 
           <h4>Threshold</h4>
-          <p>The volume level where compression starts working.</p>
+          <p>Volume level where compression starts.</p>
           <ul>
-            <li><strong>-24dB:</strong> Moderate (default)</li>
-            <li><strong>-35dB:</strong> Aggressive (dialogue preset)</li>
-            <li><strong>Lower = more compression</strong></li>
+            <li>-24dB: Moderate (default)</li>
+            <li>-35dB: Aggressive</li>
+            <li>Lower = more compression</li>
           </ul>
 
           <h4>Ratio</h4>
-          <p>How much to compress sounds above the threshold.</p>
+          <p>How much to compress.</p>
           <ul>
-            <li><strong>3:1:</strong> Gentle (default)</li>
-            <li><strong>6:1:</strong> Strong (dialogue preset)</li>
-            <li><strong>Higher = more aggressive</strong></li>
+            <li>3:1: Gentle (default)</li>
+            <li>6:1: Strong</li>
+            <li>Higher = more aggressive</li>
           </ul>
 
           <h4>Knee</h4>
-          <p>How smoothly compression engages.</p>
+          <p>Smoothness of compression.</p>
           <ul>
-            <li><strong>30dB:</strong> Smooth, natural (default)</li>
-            <li><strong>15dB:</strong> Aggressive, noticeable</li>
-            <li><strong>Higher = more natural</strong></li>
+            <li>30dB: Smooth (default)</li>
+            <li>15dB: Aggressive</li>
+            <li>Higher = more natural</li>
           </ul>
-
-          <h4>Quick Tips</h4>
-          <p><strong>For quiet dialogue:</strong> Threshold -35dB, Ratio 6:1</p>
-          <p><strong>For movies:</strong> Threshold -30dB, Ratio 4:1</p>
-          <p><strong>For music:</strong> Threshold -24dB, Ratio 3:1</p>
         </div>
       </div>
     </div>

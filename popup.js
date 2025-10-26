@@ -1,4 +1,4 @@
-// AudioLift - Popup UI Logic (v1.1.0)
+// AudioLift - Popup UI Logic (v2.0.0 - Chrome Minimal Design)
 
 class AudioLiftUI {
   constructor() {
@@ -14,143 +14,33 @@ class AudioLiftUI {
       compressionKnee: 30
     };
 
+    // Expanded preset library (20 presets)
     this.presets = {
-      flat: {
-        name: 'Flat',
-        icon: '⚖️',
-        preamp: 0,
-        bass: 0,
-        mid: 0,
-        treble: 0,
-        compressionThreshold: -24,
-        compressionRatio: 1,
-        compressionKnee: 30
-      },
-      audiophile: {
-        name: 'Audiophile',
-        icon: '🎧',
-        preamp: 0,
-        bass: 1,
-        mid: 0.5,
-        treble: 1,
-        compressionThreshold: -40,
-        compressionRatio: 1.5,
-        compressionKnee: 40
-      },
-      movie: {
-        name: 'Movie',
-        icon: '🎬',
-        preamp: 2,
-        bass: 4,
-        mid: -2,
-        treble: 2,
-        compressionThreshold: -30,
-        compressionRatio: 4,
-        compressionKnee: 20
-      },
-      dialogue: {
-        name: 'Dialogue',
-        icon: '🗣️',
-        preamp: 4,
-        bass: -3,
-        mid: 6,
-        treble: 3,
-        compressionThreshold: -35,
-        compressionRatio: 6,
-        compressionKnee: 15
-      },
-      music: {
-        name: 'Music',
-        icon: '🎵',
-        preamp: 1,
-        bass: 3,
-        mid: 1,
-        treble: 2,
-        compressionThreshold: -24,
-        compressionRatio: 2,
-        compressionKnee: 30
-      },
-      rock: {
-        name: 'Rock',
-        icon: '🎸',
-        preamp: 2,
-        bass: 5,
-        mid: 2,
-        treble: 4,
-        compressionThreshold: -20,
-        compressionRatio: 3,
-        compressionKnee: 25
-      },
-      classical: {
-        name: 'Classical',
-        icon: '🎻',
-        preamp: 0,
-        bass: 1,
-        mid: -1,
-        treble: 0,
-        compressionThreshold: -35,
-        compressionRatio: 1.5,
-        compressionKnee: 35
-      },
-      jazz: {
-        name: 'Jazz',
-        icon: '🎷',
-        preamp: 1,
-        bass: 2,
-        mid: 1,
-        treble: 1,
-        compressionThreshold: -28,
-        compressionRatio: 2,
-        compressionKnee: 30
-      },
-      podcast: {
-        name: 'Podcast',
-        icon: '🎙️',
-        preamp: 3,
-        bass: -2,
-        mid: 5,
-        treble: 2,
-        compressionThreshold: -32,
-        compressionRatio: 5,
-        compressionKnee: 18
-      },
-      gaming: {
-        name: 'Gaming',
-        icon: '🎮',
-        preamp: 3,
-        bass: 6,
-        mid: 0,
-        treble: 3,
-        compressionThreshold: -25,
-        compressionRatio: 3,
-        compressionKnee: 22
-      },
-      night: {
-        name: 'Night Mode',
-        icon: '🌙',
-        preamp: 2,
-        bass: 2,
-        mid: 3,
-        treble: 1,
-        compressionThreshold: -38,
-        compressionRatio: 8,
-        compressionKnee: 12
-      },
-      bassboost: {
-        name: 'Bass+',
-        icon: '🔊',
-        preamp: 0,
-        bass: 8,
-        mid: -1,
-        treble: 1,
-        compressionThreshold: -24,
-        compressionRatio: 3,
-        compressionKnee: 30
-      }
+      flat: { name: 'Flat', preamp: 0, bass: 0, mid: 0, treble: 0, compressionThreshold: -24, compressionRatio: 1, compressionKnee: 30 },
+      audiophile: { name: 'Audiophile', preamp: 0, bass: 1, mid: 0.5, treble: 1, compressionThreshold: -40, compressionRatio: 1.5, compressionKnee: 40 },
+      movie: { name: 'Movie', preamp: 2, bass: 4, mid: -2, treble: 2, compressionThreshold: -30, compressionRatio: 4, compressionKnee: 20 },
+      dialogue: { name: 'Dialogue', preamp: 4, bass: -3, mid: 6, treble: 3, compressionThreshold: -35, compressionRatio: 6, compressionKnee: 15 },
+      music: { name: 'Music', preamp: 1, bass: 3, mid: 1, treble: 2, compressionThreshold: -24, compressionRatio: 2, compressionKnee: 30 },
+      rock: { name: 'Rock', preamp: 2, bass: 5, mid: 2, treble: 4, compressionThreshold: -20, compressionRatio: 3, compressionKnee: 25 },
+      classical: { name: 'Classical', preamp: 0, bass: 1, mid: -1, treble: 0, compressionThreshold: -35, compressionRatio: 1.5, compressionKnee: 35 },
+      jazz: { name: 'Jazz', preamp: 1, bass: 2, mid: 1, treble: 1, compressionThreshold: -28, compressionRatio: 2, compressionKnee: 30 },
+      electronic: { name: 'Electronic', preamp: 3, bass: 7, mid: -1, treble: 5, compressionThreshold: -18, compressionRatio: 4, compressionKnee: 20 },
+      hiphop: { name: 'Hip Hop', preamp: 2, bass: 8, mid: 0, treble: 2, compressionThreshold: -22, compressionRatio: 5, compressionKnee: 18 },
+      metal: { name: 'Metal', preamp: 3, bass: 6, mid: 3, treble: 6, compressionThreshold: -15, compressionRatio: 4, compressionKnee: 15 },
+      acoustic: { name: 'Acoustic', preamp: 1, bass: 0, mid: 2, treble: 1, compressionThreshold: -30, compressionRatio: 2, compressionKnee: 35 },
+      podcast: { name: 'Podcast', preamp: 3, bass: -2, mid: 5, treble: 2, compressionThreshold: -32, compressionRatio: 5, compressionKnee: 18 },
+      gaming: { name: 'Gaming', preamp: 3, bass: 6, mid: 0, treble: 3, compressionThreshold: -25, compressionRatio: 3, compressionKnee: 22 },
+      night: { name: 'Night', preamp: 2, bass: 2, mid: 3, treble: 1, compressionThreshold: -38, compressionRatio: 8, compressionKnee: 12 },
+      bassboost: { name: 'Bass+', preamp: 0, bass: 8, mid: -1, treble: 1, compressionThreshold: -24, compressionRatio: 3, compressionKnee: 30 },
+      vocal: { name: 'Vocal', preamp: 3, bass: -4, mid: 8, treble: 4, compressionThreshold: -32, compressionRatio: 6, compressionKnee: 16 },
+      cinematic: { name: 'Cinematic', preamp: 2, bass: 5, mid: -1, treble: 3, compressionThreshold: -28, compressionRatio: 5, compressionKnee: 22 },
+      radio: { name: 'Radio', preamp: 4, bass: -3, mid: 7, treble: 3, compressionThreshold: -30, compressionRatio: 7, compressionKnee: 14 },
+      lofi: { name: 'Lo-Fi', preamp: 1, bass: 4, mid: -2, treble: -3, compressionThreshold: -26, compressionRatio: 3, compressionKnee: 25 }
     };
 
     this.autoSaveTimer = null;
     this.domain = null;
+    this.audioInfoUpdateInterval = null;
 
     this.init();
   }
@@ -176,6 +66,14 @@ class AudioLiftUI {
 
     // Update UI
     this.updateUI();
+
+    // Request audio info
+    this.requestAudioInfo();
+
+    // Update audio info periodically
+    this.audioInfoUpdateInterval = setInterval(() => {
+      this.requestAudioInfo();
+    }, 2000);
   }
 
   setupEventListeners() {
@@ -185,6 +83,11 @@ class AudioLiftUI {
       this.updateControlsState();
       this.applySettings();
       this.autoSaveSettings();
+
+      // Show/hide audio info when enabled
+      if (this.currentSettings.enabled) {
+        this.requestAudioInfo();
+      }
     });
 
     // Sliders
@@ -204,26 +107,11 @@ class AudioLiftUI {
       });
     });
 
-    // Save buttons (manual save options)
-    const saveGlobal = document.getElementById('saveGlobal');
-    const saveTab = document.getElementById('saveTab');
-
-    if (saveGlobal) {
-      saveGlobal.addEventListener('click', () => {
-        this.saveGlobalSettings();
-      });
-    }
-
-    if (saveTab) {
-      saveTab.addEventListener('click', () => {
-        this.saveTabSettings();
-      });
-    }
-
     // Help modal
     const helpBtn = document.getElementById('compressionHelp');
     const helpModal = document.getElementById('helpModal');
-    const modalClose = document.querySelector('.modal-close');
+    const modalClose = helpModal.querySelector('.modal-close');
+    const modalOverlay = helpModal.querySelector('.modal-overlay');
 
     if (helpBtn && helpModal) {
       helpBtn.addEventListener('click', () => {
@@ -234,10 +122,8 @@ class AudioLiftUI {
         helpModal.classList.add('hidden');
       });
 
-      helpModal.addEventListener('click', (e) => {
-        if (e.target === helpModal) {
-          helpModal.classList.add('hidden');
-        }
+      modalOverlay.addEventListener('click', () => {
+        helpModal.classList.add('hidden');
       });
     }
   }
@@ -273,13 +159,13 @@ class AudioLiftUI {
         valueElement.textContent = `${value >= 0 ? '+' : ''}${value}`;
         break;
       case 'threshold':
-        valueElement.textContent = `${value}`;
+        valueElement.textContent = `${value} dB`;
         break;
       case 'ratio':
         valueElement.textContent = `${value}:1`;
         break;
       case 'knee':
-        valueElement.textContent = `${value}`;
+        valueElement.textContent = `${value} dB`;
         break;
     }
   }
@@ -288,8 +174,9 @@ class AudioLiftUI {
     const preset = this.presets[presetName];
     if (!preset) return;
 
-    // Update settings
-    Object.assign(this.currentSettings, preset);
+    // Update settings (excluding name)
+    const { name, ...presetSettings } = preset;
+    Object.assign(this.currentSettings, presetSettings);
 
     // Update UI
     this.updateUI();
@@ -298,7 +185,10 @@ class AudioLiftUI {
     document.querySelectorAll('.preset-btn').forEach(btn => {
       btn.classList.remove('active');
     });
-    document.querySelector(`[data-preset="${presetName}"]`).classList.add('active');
+    const activeBtn = document.querySelector(`[data-preset="${presetName}"]`);
+    if (activeBtn) {
+      activeBtn.classList.add('active');
+    }
 
     // Apply to content script
     this.applySettings();
@@ -347,10 +237,18 @@ class AudioLiftUI {
 
   updateControlsState() {
     const controlsContainer = document.getElementById('controls');
+    const audioInfoPanel = document.getElementById('audioInfo');
+
     if (this.currentSettings.enabled) {
       controlsContainer.classList.remove('disabled');
+      if (audioInfoPanel) {
+        audioInfoPanel.classList.remove('hidden');
+      }
     } else {
       controlsContainer.classList.add('disabled');
+      if (audioInfoPanel) {
+        audioInfoPanel.classList.add('hidden');
+      }
     }
   }
 
@@ -378,87 +276,54 @@ class AudioLiftUI {
         globalSettings: { ...this.currentSettings },
         [`domainSettings_${this.domain}`]: { ...this.currentSettings }
       });
-
-      console.log(`AudioLift: Auto-saved settings for ${this.domain}`);
     }, 500);
   }
 
-  async saveGlobalSettings() {
-    await chrome.storage.local.set({
-      globalSettings: { ...this.currentSettings }
-    });
-    this.showNotification('💾 Saved as default');
+  async requestAudioInfo() {
+    try {
+      const response = await chrome.tabs.sendMessage(this.tabId, {
+        type: 'getAudioInfo'
+      });
+
+      if (response && response.audioInfo) {
+        this.updateAudioInfo(response.audioInfo);
+      }
+    } catch (error) {
+      // Silently fail if no audio info available
+    }
   }
 
-  async saveTabSettings() {
-    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-    const url = new URL(tabs[0].url);
-    const domain = url.hostname;
+  updateAudioInfo(info) {
+    const sampleRateEl = document.getElementById('sampleRate');
+    const channelsEl = document.getElementById('channels');
+    const codecEl = document.getElementById('codec');
+    const bitrateEl = document.getElementById('bitrate');
+    const durationEl = document.getElementById('duration');
 
-    await chrome.storage.local.set({
-      [`tabSettings_${this.tabId}`]: { ...this.currentSettings },
-      [`domainSettings_${domain}`]: { ...this.currentSettings }
-    });
-
-    this.showNotification(`🌐 Saved for ${domain}`);
-  }
-
-  showNotification(message) {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.textContent = message;
-    notification.style.cssText = `
-      position: fixed;
-      top: 60px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 600;
-      z-index: 1000;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      animation: slideDown 0.3s ease;
-    `;
-
-    document.body.appendChild(notification);
-
-    // Remove after 2 seconds
-    setTimeout(() => {
-      notification.style.animation = 'slideUp 0.3s ease';
-      setTimeout(() => notification.remove(), 300);
-    }, 2000);
+    if (sampleRateEl) {
+      sampleRateEl.textContent = info.sampleRate ? `${info.sampleRate} Hz` : '-';
+    }
+    if (channelsEl) {
+      channelsEl.textContent = info.channels || '-';
+    }
+    if (codecEl) {
+      codecEl.textContent = info.codec || 'Unknown';
+    }
+    if (bitrateEl) {
+      bitrateEl.textContent = info.bitrate || 'Unknown';
+    }
+    if (durationEl) {
+      durationEl.textContent = info.duration || '-';
+    }
   }
 }
 
-// Add CSS animations
-const style = document.createElement('style');
-style.textContent = `
-  @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateX(-50%) translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-  }
-
-  @keyframes slideUp {
-    from {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-    to {
-      opacity: 0;
-      transform: translateX(-50%) translateY(-10px);
-    }
-  }
-`;
-document.head.appendChild(style);
-
 // Initialize UI
 const audioLiftUI = new AudioLiftUI();
+
+// Cleanup on unload
+window.addEventListener('unload', () => {
+  if (audioLiftUI.audioInfoUpdateInterval) {
+    clearInterval(audioLiftUI.audioInfoUpdateInterval);
+  }
+});
