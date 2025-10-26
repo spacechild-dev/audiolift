@@ -13,12 +13,44 @@ AudioLift is a Chrome extension that provides professional-grade audio enhanceme
   - Adjustable threshold, ratio, and knee
   - Perfect for movies with quiet dialogue and loud action scenes
 - **Real-time Processing**: Zero latency audio enhancement using Web Audio API
+- **Audio Information Display**: Real-time metadata panel showing:
+  - Sample rate (e.g., 48000 Hz)
+  - Channel configuration (Mono/Stereo)
+  - Codec (MP3, AAC, Opus, Vorbis, FLAC, etc.)
+  - Bitrate estimation
+  - Duration (mm:ss format)
 
-### Presets
-- **Flat**: No processing, neutral sound
-- **Movie**: Enhanced for film content - reduced mids, boosted bass/treble, moderate compression
-- **Dialogue**: Optimized for speech clarity - boosted mids, aggressive compression to bring voices forward
-- **Bass Boost**: Enhanced low frequencies for music and effects
+### Presets (20 Available)
+
+**Neutral & Reference:**
+- **Flat** - No processing, neutral sound
+- **Audiophile** - Subtle enhancement for critical listening
+
+**Movies & TV:**
+- **Movie** - Enhanced bass/treble, moderate compression
+- **Dialogue** - Boosted mids, aggressive compression for voices
+- **Cinematic** - Wide soundstage for immersive films
+- **Night** - Heavy compression for late-night viewing
+
+**Music Genres:**
+- **Music** - Balanced enhancement for general music
+- **Rock** - Heavy bass and treble for rock music
+- **Classical** - Natural, gentle sound for orchestral
+- **Jazz** - Warm, balanced for jazz
+- **Electronic** - Heavy bass + treble for EDM
+- **Hip Hop** - Maximum bass with compression
+- **Metal** - Aggressive bass and treble
+- **Acoustic** - Natural sound, minimal processing
+- **Lo-Fi** - Warm sound with reduced treble
+
+**Speech & Content:**
+- **Podcast** - Speech optimized with compression
+- **Radio** - Heavily compressed for radio-style sound
+- **Vocal** - Extreme mid boost for vocals
+
+**Gaming & Bass:**
+- **Gaming** - Immersive with heavy bass
+- **Bass+** - Maximum bass boost
 
 ### Smart Settings
 - **Per-Site Memory**: Automatically saves settings for each website
@@ -215,6 +247,13 @@ Created with Claude Code.
 
 ## Version
 
-Current version: 1.1.0
+Current version: 2.0.0
 
 See [CHANGELOG.md](CHANGELOG.md) for version history.
+
+## What's New in 2.0
+
+- **Chrome Minimal Design** - Clean, flat UI inspired by Chrome's Material Design
+- **Audio Information Display** - Real-time codec, bitrate, sample rate, and channel info
+- **20 Presets** - Expanded from 12 to 20 including Electronic, Hip Hop, Metal, Vocal, Cinematic, Radio, and Lo-Fi
+- **Smaller Footprint** - Reduced popup width (360px) for less screen space

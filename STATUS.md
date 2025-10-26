@@ -1,8 +1,15 @@
 # AudioLift - Project Status
 
-**Current Version:** 1.1.0
-**Last Updated:** 2025-10-25
+**Current Version:** 2.0.0
+**Last Updated:** 2025-10-26
 **Status:** ✅ Ready for Testing & Release
+
+## 🎨 v2.0 Highlights
+
+- **Chrome Minimal Design** - Complete UI overhaul
+- **Audio Information Panel** - Real-time codec, bitrate, sample rate display
+- **20 Presets** - Expanded from 12 (added Electronic, Hip Hop, Metal, Vocal, etc.)
+- **Smaller Footprint** - 360px width (down from 400px)
 
 ---
 

@@ -5,6 +5,56 @@ All notable changes to AudioLift will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2025-10-26
+
+### Changed - BREAKING
+- **Complete UI redesign** to Chrome's minimal design language
+- Popup width reduced from 400px to 360px
+- Removed gradient backgrounds in favor of flat design
+- Removed emoji icons from presets and UI elements
+- New color scheme based on Chrome's Material Design
+- System fonts (Segoe UI) instead of custom fonts
+
+### Added
+- **Audio information panel** displaying real-time metadata:
+  - Sample rate (from AudioContext)
+  - Channel configuration (Mono/Stereo)
+  - Codec detection (MP3, AAC, Opus, Vorbis, FLAC, etc.)
+  - Bitrate estimation
+  - Duration display (mm:ss format)
+- **8 new presets** (total now 20):
+  - Electronic - Heavy bass + treble for EDM
+  - Hip Hop - Maximum bass with heavy compression
+  - Metal - Aggressive bass and treble boost
+  - Acoustic - Natural sound, minimal processing
+  - Vocal - Extreme mid-range boost for vocals
+  - Cinematic - Wide soundstage for movies
+  - Radio - Speech optimized with compression
+  - Lo-Fi - Warm sound with reduced treble
+- Audio info auto-updates every 2 seconds
+- Audio info panel auto-shows when enabled
+- Codec detection from file extension and MIME type
+- Network state-based bitrate estimation
+
+### Technical
+- New `getAudioInfo()` method in content script
+- Codec detection algorithm with extension mapping
+- Channel count detection from AudioContext source node
+- Duration formatting utility
+- Message handler for `getAudioInfo` requests
+- Periodic updates with cleanup on popup unload
+- Chrome-style toggle switch component
+
+### Design System
+- Primary color: #1a73e8 (Chrome blue)
+- Text colors: #202124 (primary), #5f6368 (secondary)
+- Border colors: #e8eaed, #dadce0
+- Background: #fff, #f8f9fa
+- Monospace font for technical values (Consolas, Monaco)
+- Reduced border radius (8px → 4px)
+- Subtle hover states
+- Material Design-inspired shadows
+
 ## [1.0.0] - 2025-10-25
 
 ### Added
