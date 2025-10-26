@@ -722,6 +722,30 @@ body.sidepanel-mode .popup-only {
   color: var(--accent);
 }
 
+/* Checkbox Label */
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text-primary);
+  transition: background 0.15s;
+  border-radius: 4px;
+}
+
+.checkbox-label:hover {
+  background: var(--bg-secondary);
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--accent);
+}
+
 .custom-preset-list {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

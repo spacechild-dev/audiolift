@@ -190,6 +190,14 @@ class AudioLiftUI {
       });
     }
 
+    // Chrome theme checkbox
+    const useChromeThemeCheckbox = document.getElementById('useChromeTheme');
+    if (useChromeThemeCheckbox) {
+      useChromeThemeCheckbox.addEventListener('change', async (e) => {
+        await this.toggleChromeTheme(e.target.checked);
+      });
+    }
+
     // Sliders - 10-band EQ
     const eqBands = ['eq32', 'eq64', 'eq125', 'eq250', 'eq500', 'eq1k', 'eq2k', 'eq4k', 'eq8k', 'eq16k'];
     const otherSliders = ['preamp', 'threshold', 'ratio', 'knee'];
@@ -461,8 +469,20 @@ class AudioLiftUI {
 
   async initTheme() {
     // Load saved theme preference
-    const result = await chrome.storage.local.get(['themePreference']);
+    const result = await chrome.storage.local.get(['themePreference', 'useChromeTheme']);
     const savedTheme = result.themePreference; // 'light', 'dark', or 'auto' (undefined = auto)
+    const useChromeTheme = result.useChromeTheme || false;
+
+    // Update checkbox state
+    const checkbox = document.getElementById('useChromeTheme');
+    if (checkbox) {
+      checkbox.checked = useChromeTheme;
+    }
+
+    // Apply Chrome theme if enabled
+    if (useChromeTheme) {
+      await this.applyChromeTheme();
+    }
 
     if (savedTheme === 'light') {
       document.body.classList.add('light-mode');
@@ -543,6 +563,64 @@ class AudioLiftUI {
 
     themeBtn.textContent = icons[theme] || icons.auto;
     themeBtn.title = `Theme: ${theme === 'auto' ? 'Auto (System)' : theme === 'light' ? 'Light' : 'Dark'} - Click to cycle`;
+  }
+
+  async toggleChromeTheme(enabled) {
+    // Save preference
+    await chrome.storage.local.set({ useChromeTheme: enabled });
+
+    if (enabled) {
+      await this.applyChromeTheme();
+    } else {
+      // Reset to default colors (remove inline styles)
+      document.documentElement.style.removeProperty('--bg-primary');
+      document.documentElement.style.removeProperty('--bg-secondary');
+      document.documentElement.style.removeProperty('--bg-tertiary');
+    }
+  }
+
+  async applyChromeTheme() {
+    try {
+      // Get Chrome's current theme
+      const theme = await chrome.theme.getCurrent();
+
+      if (theme && theme.colors) {
+        // Chrome theme colors are available
+        console.log('Chrome theme:', theme);
+
+        // Map Chrome theme colors to our CSS variables
+        if (theme.colors.frame) {
+          // 'frame' is the toolbar/chrome background color
+          const frameColor = this.rgbArrayToHex(theme.colors.frame);
+          document.documentElement.style.setProperty('--bg-tertiary', frameColor);
+        }
+
+        if (theme.colors.toolbar) {
+          // 'toolbar' is usually lighter
+          const toolbarColor = this.rgbArrayToHex(theme.colors.toolbar);
+          document.documentElement.style.setProperty('--bg-primary', toolbarColor);
+          document.documentElement.style.setProperty('--bg-secondary', toolbarColor);
+        }
+
+        // If no toolbar color but has frame, derive lighter version
+        if (!theme.colors.toolbar && theme.colors.frame) {
+          const frameColor = this.rgbArrayToHex(theme.colors.frame);
+          document.documentElement.style.setProperty('--bg-primary', frameColor);
+          document.documentElement.style.setProperty('--bg-secondary', frameColor);
+        }
+      }
+    } catch (error) {
+      console.log('Chrome theme API not available or no custom theme:', error);
+    }
+  }
+
+  rgbArrayToHex(rgb) {
+    // Convert [r, g, b] array to hex color
+    if (!rgb || rgb.length < 3) return null;
+    const r = rgb[0].toString(16).padStart(2, '0');
+    const g = rgb[1].toString(16).padStart(2, '0');
+    const b = rgb[2].toString(16).padStart(2, '0');
+    return `#${r}${g}${b}`;
   }
 }
 
