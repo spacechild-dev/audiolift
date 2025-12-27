@@ -79,18 +79,7 @@ AudioLift is a Chrome extension that provides professional-grade audio enhanceme
 2. Open Chrome and navigate to `chrome://extensions/`
 3. Enable "Developer mode" in the top right
 4. Click "Load unpacked"
-5. Select the `AudioLift` folder
-
-### Icons
-
-Icons are automatically generated from the SVG source. To regenerate:
-
-```bash
-cd AudioLift
-node generate-icons.js
-```
-
-Requirements: Node.js and Chrome/Chromium installed.
+5. Select the `extension` folder in the `AudioLift` directory
 
 ## Usage
 
@@ -215,8 +204,7 @@ AudioLift/
 │   ├── styles.css       # UI styling
 │   ├── content-script.js # Audio processing (Web Audio API)
 │   └── background.js    # Service worker
-├── chrome-web-store/     # Store assets and screenshots
-└── icons/               # Extension icons
+└── README.md             # This file
 ```
 
 ### Building
