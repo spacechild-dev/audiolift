@@ -208,17 +208,15 @@ AudioLift uses the Web Audio API to process audio in real-time:
 
 ```
 AudioLift/
-├── manifest.json          # Extension manifest (Manifest V3)
-├── popup.html            # UI markup
-├── popup.js              # UI logic and settings management
-├── styles.css            # UI styling
-├── content-script.js     # Audio processing (Web Audio API)
-├── background.js         # Service worker (keyboard shortcuts)
-├── icons/                # Extension icons
-├── generate-icons.js     # Icon generator script
-├── CHANGELOG.md          # Version history
-├── README.md             # This file
-└── claude.md             # Development directives
+├── extension/            # Extension source code (Manifest V3)
+│   ├── manifest.json     # Extension manifest
+│   ├── popup.html       # UI markup
+│   ├── popup.js         # UI logic and settings
+│   ├── styles.css       # UI styling
+│   ├── content-script.js # Audio processing (Web Audio API)
+│   └── background.js    # Service worker
+├── chrome-web-store/     # Store assets and screenshots
+└── icons/               # Extension icons
 ```
 
 ### Building
@@ -250,15 +248,9 @@ Contributions welcome! Please feel free to submit issues or pull requests.
 
 MIT License - feel free to use and modify.
 
-## Credits
-
-Created with Claude Code.
-
 ## Version
 
-Current version: 2.2.0
-
-See [CHANGELOG.md](CHANGELOG.md) for version history.
+Current version: 2.2.1
 
 ## What's New in 2.2
 

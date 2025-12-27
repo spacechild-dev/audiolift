@@ -3,6 +3,7 @@
 class AudioLiftUI {
   constructor() {
     this.tabId = null;
+    this.currentPreset = null; // Track active preset per domain
     this.currentSettings = {
       enabled: false,
       preamp: 0,
@@ -18,12 +19,11 @@ class AudioLiftUI {
       eq16k: 0,
       compressionThreshold: -24,
       compressionRatio: 3,
-      compressionKnee: 30
+      compressionKnee: 30,
+      smartVolume: false,
+      mono: false,
+      loudnessMode: false
     };
-
-    this.spectrumCanvas = null;
-    this.spectrumCtx = null;
-    this.animationFrameId = null;
 
     // Simplified presets for 10-band (bass/mid/treble distributed)
     this.presets = {
@@ -64,25 +64,24 @@ class AudioLiftUI {
     this.detectMode();
 
     // Get current tab
-    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-    this.tabId = tabs[0].id;
-
-    // Get domain
-    try {
-      const url = new URL(tabs[0].url);
-      this.domain = url.hostname;
-    } catch (e) {
-      this.domain = 'unknown';
-    }
+    await this.updateCurrentTab();
 
     // Setup event listeners
     this.setupEventListeners();
+
+    // Listen for tab changes (important for side panel mode)
+    this.setupTabListener();
 
     // Load settings
     await this.loadSettings();
 
     // Update UI
     this.updateUI();
+
+    // Give content script a moment to initialize before applying settings
+    setTimeout(() => {
+        this.applySettings();
+    }, 100);
 
     // Request audio info
     this.requestAudioInfo();
@@ -91,12 +90,6 @@ class AudioLiftUI {
     this.audioInfoUpdateInterval = setInterval(() => {
       this.requestAudioInfo();
     }, 2000);
-
-    // Setup footer links
-    this.setupFooterLinks();
-
-    // Setup spectrum analyzer
-    this.setupSpectrumAnalyzer();
   }
 
   detectMode() {
@@ -105,64 +98,76 @@ class AudioLiftUI {
     document.body.classList.add(isWide ? 'sidepanel-mode' : 'popup-mode');
   }
 
-  setupFooterLinks() {
-    const links = {
-      websiteLink: '#daiquiri.dev',
-      githubLink: '#github-sponsors',
-      coffeeLink: '#buymeacoffee'
-    };
+  async updateCurrentTab() {
+    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (tabs[0]) {
+      this.tabId = tabs[0].id;
 
-    Object.entries(links).forEach(([id, url]) => {
-      const element = document.getElementById(id);
-      if (element && url !== '#') {
-        element.href = url;
+      // Get domain
+      try {
+        const url = new URL(tabs[0].url);
+        this.domain = url.hostname;
+      } catch (e) {
+        this.domain = 'unknown';
+      }
+    }
+  }
+
+  setupTabListener() {
+    // Listen for tab activation changes (important for side panel mode)
+    chrome.tabs.onActivated.addListener(async (activeInfo) => {
+      // Update to new active tab
+      const oldTabId = this.tabId;
+      this.tabId = activeInfo.tabId;
+
+      // Get new domain
+      try {
+        const tab = await chrome.tabs.get(activeInfo.tabId);
+        const url = new URL(tab.url);
+        this.domain = url.hostname;
+      } catch (e) {
+        this.domain = 'unknown';
+      }
+
+      // Only reload if tab actually changed
+      if (oldTabId !== this.tabId) {
+        console.log('AudioLift: Tab changed from', oldTabId, 'to', this.tabId);
+
+        // Reload settings for new tab/domain
+        await this.loadSettings();
+
+        // Update UI
+        this.updateUI();
+
+        // Request audio info for new tab
+        this.requestAudioInfo();
       }
     });
-  }
 
-  setupSpectrumAnalyzer() {
-    this.spectrumCanvas = document.getElementById('spectrumCanvas');
-    if (!this.spectrumCanvas) return;
+    // Also listen for tab updates (URL changes within same tab)
+    chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+      // Only care about the current tab
+      if (tabId === this.tabId && changeInfo.url) {
+        console.log('AudioLift: Tab URL changed to', changeInfo.url);
 
-    this.spectrumCtx = this.spectrumCanvas.getContext('2d');
-
-    // Request spectrum data periodically
-    setInterval(async () => {
-      try {
-        const response = await chrome.tabs.sendMessage(this.tabId, {
-          type: 'getSpectrumData'
-        });
-        if (response && response.data) {
-          this.drawSpectrum(response.data);
+        // Update domain
+        try {
+          const url = new URL(changeInfo.url);
+          this.domain = url.hostname;
+        } catch (e) {
+          this.domain = 'unknown';
         }
-      } catch (e) {
-        // Silently fail
+
+        // Reload settings for new domain
+        await this.loadSettings();
+
+        // Update UI
+        this.updateUI();
+
+        // Request audio info
+        this.requestAudioInfo();
       }
-    }, 50); // 20fps
-  }
-
-  drawSpectrum(dataArray) {
-    if (!this.spectrumCtx || !dataArray) return;
-
-    const canvas = this.spectrumCanvas;
-    const ctx = this.spectrumCtx;
-    const width = canvas.width;
-    const height = canvas.height;
-
-    // Clear canvas
-    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    ctx.fillStyle = isDark ? '#292a2d' : '#f8f9fa';
-    ctx.fillRect(0, 0, width, height);
-
-    // Draw bars
-    const barWidth = width / dataArray.length;
-    const barColor = isDark ? '#8ab4f8' : '#1a73e8';
-
-    for (let i = 0; i < dataArray.length; i++) {
-      const barHeight = (dataArray[i] / 255) * height;
-      ctx.fillStyle = barColor;
-      ctx.fillRect(i * barWidth, height - barHeight, barWidth - 1, barHeight);
-    }
+    });
   }
 
   setupEventListeners() {
@@ -174,11 +179,40 @@ class AudioLiftUI {
       this.autoSaveSettings();
     });
 
-    // Advanced button (popup only)
-    const advancedBtn = document.getElementById('advancedBtn');
-    if (advancedBtn) {
-      advancedBtn.addEventListener('click', () => {
-        chrome.sidePanel.open({ windowId: chrome.windows.WINDOW_ID_CURRENT });
+    // Smart Volume Toggle
+    const smartVolumeBtn = document.getElementById('smartVolumeBtn');
+    if (smartVolumeBtn) {
+      smartVolumeBtn.addEventListener('click', () => {
+        this.currentSettings.smartVolume = !this.currentSettings.smartVolume;
+        this.applySettings();
+        this.autoSaveSettings();
+        this.updateUI();
+      });
+    }
+
+    // Mono Toggle
+    const monoBtn = document.getElementById('monoBtn');
+    if (monoBtn) {
+      monoBtn.addEventListener('click', () => {
+        this.currentSettings.mono = !this.currentSettings.mono;
+        this.applySettings();
+        this.autoSaveSettings();
+        this.updateUI();
+      });
+    }
+
+    // Loudness Toggle
+    const loudnessBtn = document.getElementById('loudnessBtn');
+    if (loudnessBtn) {
+      loudnessBtn.addEventListener('click', () => {
+        this.currentSettings.loudnessMode = !this.currentSettings.loudnessMode;
+        // If loudness is on, turn off smart volume for logical consistency
+        if (this.currentSettings.loudnessMode) {
+            this.currentSettings.smartVolume = false;
+        }
+        this.applySettings();
+        this.autoSaveSettings();
+        this.updateUI();
       });
     }
 
@@ -249,6 +283,15 @@ class AudioLiftUI {
     if (deletePresetBtn) {
       deletePresetBtn.addEventListener('click', () => this.deleteCustomPreset());
     }
+
+    // Reload button
+    const reloadBtn = document.getElementById('reloadBtn');
+    if (reloadBtn) {
+      reloadBtn.addEventListener('click', () => {
+        chrome.tabs.reload(this.tabId);
+        window.close(); // Close popup
+      });
+    }
   }
 
   handleSliderChange(id, value) {
@@ -299,38 +342,92 @@ class AudioLiftUI {
     const { name, ...presetSettings } = preset;
     Object.assign(this.currentSettings, presetSettings);
 
-    this.updateUI();
-
-    document.querySelectorAll('.preset-btn').forEach(btn => {
-      btn.classList.remove('active');
+    // Save active preset for this domain
+    this.currentPreset = presetName;
+    chrome.storage.local.set({
+      [`domainPreset_${this.domain}`]: presetName
     });
-    const activeBtn = document.querySelector(`[data-preset="${presetName}"]`);
-    if (activeBtn) {
-      activeBtn.classList.add('active');
-    }
+
+    this.updateUI();
 
     this.applySettings();
     this.autoSaveSettings();
+  }
+
+  highlightActivePreset() {
+    // Clear all active states
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+
+    // Highlight current preset
+    if (this.currentPreset) {
+      const activeBtn = document.querySelector(`[data-preset="${this.currentPreset}"]`);
+      if (activeBtn) {
+        activeBtn.classList.add('active');
+      }
+    }
   }
 
   async loadSettings() {
     const result = await chrome.storage.local.get([
       'globalSettings',
       `domainSettings_${this.domain}`,
-      `tabSettings_${this.tabId}`
+      `domainPreset_${this.domain}`
     ]);
 
     this.currentSettings = {
       ...this.currentSettings,
       ...result.globalSettings,
-      ...result[`domainSettings_${this.domain}`],
-      ...result[`tabSettings_${this.tabId}`]
+      ...result[`domainSettings_${this.domain}`]
     };
+
+    // Load active preset for this domain
+    this.currentPreset = result[`domainPreset_${this.domain}`] || null;
   }
 
   updateUI() {
     document.getElementById('masterToggle').checked = this.currentSettings.enabled;
     this.updateControlsState();
+
+    // Update Quick Tools Buttons
+    const smartVolumeBtn = document.getElementById('smartVolumeBtn');
+    const monoBtn = document.getElementById('monoBtn');
+    const loudnessBtn = document.getElementById('loudnessBtn');
+    
+    if (smartVolumeBtn) {
+        if (this.currentSettings.smartVolume) smartVolumeBtn.classList.add('active');
+        else smartVolumeBtn.classList.remove('active');
+    }
+    
+    if (monoBtn) {
+        if (this.currentSettings.mono) monoBtn.classList.add('active');
+        else monoBtn.classList.remove('active');
+    }
+
+    if (loudnessBtn) {
+        if (this.currentSettings.loudnessMode) loudnessBtn.classList.add('active');
+        else loudnessBtn.classList.remove('active');
+    }
+
+    // Disable compression controls if Smart Volume is active
+    const compressionControls = document.querySelector('.compression-controls');
+    if (compressionControls) {
+        if (this.currentSettings.smartVolume) compressionControls.classList.add('disabled');
+        else compressionControls.classList.remove('disabled');
+    }
+
+    // Disable EQ sliders if Loudness mode is active
+    const eqSliders = document.querySelectorAll('.eq-band input[type="range"]');
+    const preampSlider = document.getElementById('preamp');
+    
+    if (this.currentSettings.loudnessMode) {
+        eqSliders.forEach(slider => slider.classList.add('disabled'));
+        if (preampSlider) preampSlider.classList.add('disabled');
+    } else {
+        eqSliders.forEach(slider => slider.classList.remove('disabled'));
+        if (preampSlider) preampSlider.classList.remove('disabled');
+    }
 
     // Update all EQ sliders
     const eqBands = ['eq32', 'eq64', 'eq125', 'eq250', 'eq500', 'eq1k', 'eq2k', 'eq4k', 'eq8k', 'eq16k'];
@@ -352,6 +449,9 @@ class AudioLiftUI {
     this.updateSliderValue('threshold', this.currentSettings.compressionThreshold);
     this.updateSliderValue('ratio', this.currentSettings.compressionRatio);
     this.updateSliderValue('knee', this.currentSettings.compressionKnee);
+
+    // Highlight active preset
+    this.highlightActivePreset();
   }
 
   updateControlsState() {
@@ -372,10 +472,17 @@ class AudioLiftUI {
   }
 
   async applySettings() {
+    if (!this.tabId) return;
+    
     try {
-      await chrome.tabs.sendMessage(this.tabId, {
+      chrome.tabs.sendMessage(this.tabId, {
         type: 'updateSettings',
         settings: this.currentSettings
+      }, (response) => {
+        if (chrome.runtime.lastError) {
+          // Content script not ready or page restricted
+          console.log('AudioLift: Could not update settings on tab', this.tabId, chrome.runtime.lastError.message);
+        }
       });
     } catch (error) {
       console.error('Error applying settings:', error);
@@ -403,9 +510,15 @@ class AudioLiftUI {
 
       if (response && response.audioInfo) {
         this.updateAudioInfo(response.audioInfo);
+        // If successful, ensure warning is hidden
+        document.getElementById('reloadWarning')?.classList.add('hidden');
       }
     } catch (error) {
-      // Silently fail
+      // Content script likely not loaded, show reload warning
+      // Only show if we are on a valid http/https page
+      if (this.domain && this.domain !== 'unknown' && !this.domain.startsWith('chrome')) {
+        document.getElementById('reloadWarning')?.classList.remove('hidden');
+      }
     }
   }
 
@@ -441,7 +554,19 @@ class AudioLiftUI {
   }
 
   async deleteCustomPreset() {
-    // Delete selected preset (TODO: add selection UI)
+    const nameInput = document.getElementById('presetName');
+    const name = nameInput.value.trim();
+    if (!name) return;
+
+    const result = await chrome.storage.local.get('customPresets');
+    const presets = result.customPresets || {};
+
+    if (presets[name]) {
+      delete presets[name];
+      await chrome.storage.local.set({ customPresets: presets });
+      nameInput.value = '';
+      this.loadCustomPresets();
+    }
   }
 
   async loadCustomPresets() {
@@ -458,6 +583,10 @@ class AudioLiftUI {
       btn.textContent = name;
       btn.onclick = () => {
         Object.assign(this.currentSettings, settings);
+        // Populate input for easy update/delete
+        const nameInput = document.getElementById('presetName');
+        if (nameInput) nameInput.value = name;
+
         this.updateUI();
         this.applySettings();
       };
@@ -631,8 +760,5 @@ const audioLiftUI = new AudioLiftUI();
 window.addEventListener('unload', () => {
   if (audioLiftUI.audioInfoUpdateInterval) {
     clearInterval(audioLiftUI.audioInfoUpdateInterval);
-  }
-  if (audioLiftUI.animationFrameId) {
-    cancelAnimationFrame(audioLiftUI.animationFrameId);
   }
 });

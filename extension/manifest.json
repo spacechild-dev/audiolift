@@ -1,14 +1,13 @@
 {
   "manifest_version": 3,
   "name": "AudioLift",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Boost and enhance audio for any browser tab with EQ, dynamic range compression, and dialogue enhancement.",
   "permissions": [
     "storage",
     "activeTab",
     "scripting",
-    "sidePanel",
-    "theme"
+    "sidePanel"
   ],
   "host_permissions": [
     "<all_urls>"

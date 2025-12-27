@@ -36,6 +36,15 @@ tmp/
 temp/
 *.tmp
 
+# AI Agents
+.claude/
+.gemini/
+.gemini-clipboard/
+
+# Private / Store Assets
+chrome-web-store/
+generate-icons.js
+
 # Old versions (if you keep backups)
 popup-old.html
 popup-old.js

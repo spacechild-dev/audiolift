@@ -11,8 +11,9 @@
     <!-- Chrome-style Header -->
     <div class="header">
       <div class="header-left">
-        <h1>AudioLift</h1>
-        <button class="advanced-btn popup-only" id="advancedBtn" title="Open Advanced Controls in Side Panel">⚙️</button>
+        <div class="logo-container">
+          <img src="logo-design/logo.png" alt="AudioLift" class="logo-img">
+        </div>
         <button class="theme-btn" id="themeBtn" title="Toggle Dark/Light Mode">🌙</button>
       </div>
       <label class="toggle-switch">
@@ -21,6 +22,12 @@
           <span class="toggle-thumb"></span>
         </span>
       </label>
+    </div>
+
+    <!-- Reload Warning -->
+    <div id="reloadWarning" class="warning-banner hidden">
+      <span>⚠️ Please reload page to activate</span>
+      <button id="reloadBtn" class="btn-small">↻ Reload</button>
     </div>
 
     <!-- Audio Information Panel - Compact -->
@@ -52,6 +59,22 @@
     </div>
 
     <div id="controls" class="controls-container disabled">
+      
+      <!-- Quick Tools -->
+      <div class="section">
+        <div class="quick-tools">
+          <button class="tool-btn" id="smartVolumeBtn" title="Standardize volume levels (Normalization)">
+            <span>📢</span> Smart Volume
+          </button>
+          <button class="tool-btn" id="monoBtn" title="Merge channels to Mono">
+            <span>🔊</span> Mono
+          </button>
+          <button class="tool-btn" id="loudnessBtn" title="Enhance bass & treble for a fuller sound">
+            <span>🎚️</span> Loudness
+          </button>
+        </div>
+      </div>
+
       <!-- Presets Section -->
       <div class="section">
         <div class="section-title">Presets</div>
@@ -86,12 +109,6 @@
           <span class="control-value" id="preampValue">0 dB</span>
         </div>
         <input type="range" id="preamp" min="-10" max="10" step="0.5" value="0" class="slider">
-      </div>
-
-      <!-- Spectrum Analyzer -->
-      <div class="section">
-        <div class="section-title">Spectrum Analyzer</div>
-        <canvas id="spectrumCanvas" width="344" height="60"></canvas>
       </div>
 
       <!-- 10-Band EQ Section -->
@@ -207,11 +224,11 @@
       <div class="footer-info">
         <div class="footer-text">Settings auto-saved per site</div>
         <div class="footer-links">
-          <a href="#" class="footer-link" id="websiteLink" target="_blank" title="Visit daiquiri.dev">🌐 Website</a>
+          <a href="https://daiquiri.dev" class="footer-link" target="_blank" title="Website">🌐 daiquiri.dev</a>
           <span class="footer-separator">•</span>
-          <a href="#" class="footer-link" id="githubLink" target="_blank" title="GitHub Sponsors">💖 GitHub</a>
+          <a href="https://github.daiquiri.dev" class="footer-link" target="_blank" title="GitHub">💖 GitHub</a>
           <span class="footer-separator">•</span>
-          <a href="#" class="footer-link" id="coffeeLink" target="_blank" title="Buy me a coffee">☕ Coffee</a>
+          <a href="https://bmc.daiquiri.dev" class="footer-link" target="_blank" title="Buy me a coffee">☕ Coffee</a>
         </div>
       </div>
     </div>
