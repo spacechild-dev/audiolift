@@ -29,34 +29,35 @@ const Header: React.FC<HeaderProps> = ({ enabled, onToggle }) => {
   };
 
   return (
-    <div className="flex items-center justify-between px-3.5 py-3 border-b border-border-primary bg-bg-primary flex-shrink-0">
-      <div className="flex items-center gap-2">
-        <div className="flex items-center gap-2">
+    <div className="flex items-center justify-between px-4 py-3 border-b border-border-primary bg-bg-primary flex-shrink-0 select-none">
+      <div className="flex items-center gap-3">
+        <div className="flex items-center">
           <img 
-            src="/icons/icon48.png" 
+            src="/logo.png" 
             alt="AudioLift" 
-            className="h-[26px] w-auto block filter dark:filter-none invert-[1] brightness-[0.2] sepia-[1] saturate-[5] hue-rotate-[200deg]" 
+            className="logo-fixed block object-contain filter dark:brightness-0 dark:invert" 
           />
         </div>
+      </div>
+      <div className="flex items-center gap-3">
         <button 
           onClick={cycleTheme}
-          className="px-2 py-1 border border-border-secondary rounded bg-bg-primary text-text-secondary text-sm hover:bg-bg-secondary hover:border-accent hover:text-accent transition-all"
+          className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-bg-secondary text-text-secondary transition-colors"
           title={`Theme: ${theme}`}
         >
           {theme === 'light' ? '☀️' : theme === 'dark' ? '🌙' : '🌓'}
         </button>
+        <label className="toggle-switch relative inline-block cursor-pointer w-9 h-5">
+          <input 
+            type="checkbox" 
+            checked={enabled} 
+            onChange={(e) => onToggle(e.target.checked)}
+            className="sr-only peer"
+          />
+          <span className={`block w-full h-full rounded-full transition-colors ${enabled ? 'bg-accent' : 'bg-border-secondary'}`}></span>
+          <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-transform ${enabled ? 'translate-x-4' : 'translate-x-0'}`}></span>
+        </label>
       </div>
-      <label className="toggle-switch relative inline-block cursor-pointer">
-        <input 
-          type="checkbox" 
-          checked={enabled} 
-          onChange={(e) => onToggle(e.target.checked)}
-          className="opacity-0 w-0 h-0 absolute"
-        />
-        <span className={`toggle-track block w-9 h-3.5 rounded-full transition-colors relative ${enabled ? 'bg-accent' : 'bg-border-secondary'}`}>
-          <span className={`toggle-thumb absolute top-[-3px] left-0 w-5 h-5 bg-bg-primary rounded-full shadow-md border border-border-secondary transition-transform ${enabled ? 'translate-x-4 border-accent bg-accent' : ''}`}></span>
-        </span>
-      </label>
     </div>
   );
 };

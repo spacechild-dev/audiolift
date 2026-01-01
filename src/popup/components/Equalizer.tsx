@@ -13,8 +13,8 @@ const labels = ['32', '64', '125', '250', '500', '1k', '2k', '4k', '8k', '16k'];
 
 const Equalizer: React.FC<EqualizerProps> = ({ settings, updateSettings, disabled }) => {
   return (
-    <div className="p-3 border-b border-border-light">
-      <div className="section-title text-[10px] font-medium text-text-secondary uppercase tracking-wider mb-1.5">10-Band Equalizer</div>
+    <div className="px-4 py-3 border-b border-border-light">
+      <div className="section-title text-[10px] font-medium text-text-secondary uppercase tracking-wider mb-2">10-Band Equalizer</div>
       
       {/* Preamp */}
       <div className="mb-2">

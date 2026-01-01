@@ -8,7 +8,7 @@ interface QuickToolsProps {
 
 const QuickTools: React.FC<QuickToolsProps> = ({ settings, updateSettings }) => {
   return (
-    <div className="p-3 border-b border-border-light">
+    <div className="px-4 py-3 border-b border-border-light">
       <div className="flex gap-2">
         <button
           onClick={() => updateSettings({ smartVolume: !settings.smartVolume })}

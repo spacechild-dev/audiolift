@@ -15,9 +15,9 @@ export const useAudioSettings = () => {
   });
   const [activePreset, setActivePreset] = useState<string | null>(null);
 
-  // Load initial state
+  // Load initial state and listen for tab changes
   useEffect(() => {
-    const init = async () => {
+    const updateActiveTab = async () => {
       const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
       if (tabs.length > 0 && tabs[0].id) {
         const currentTabId = tabs[0].id;
@@ -51,7 +51,29 @@ export const useAudioSettings = () => {
       }
     };
 
-    init();
+    updateActiveTab();
+
+    // Listen for tab switching
+    const onActivated = () => updateActiveTab();
+    chrome.tabs.onActivated.addListener(onActivated);
+
+    // Listen for navigation (URL changes)
+    const onUpdated = (updatedTabId: number, changeInfo: chrome.tabs.TabChangeInfo) => {
+      if (changeInfo.status === 'complete' || changeInfo.url) {
+        // Only update if it's the active tab (handled by updateActiveTab query, but we trigger it)
+        chrome.tabs.query({ active: true, currentWindow: true }).then(tabs => {
+          if (tabs[0] && tabs[0].id === updatedTabId) {
+            updateActiveTab();
+          }
+        });
+      }
+    };
+    chrome.tabs.onUpdated.addListener(onUpdated);
+
+    return () => {
+      chrome.tabs.onActivated.removeListener(onActivated);
+      chrome.tabs.onUpdated.removeListener(onUpdated);
+    };
   }, []);
 
   // Sync to Content Script & Storage

@@ -12,8 +12,8 @@ const Compressor: React.FC<CompressorProps> = ({ settings, updateSettings, disab
   const [showHelp, setShowHelp] = useState(false);
 
   return (
-    <div className="p-3 border-b border-border-light relative">
-      <div className="section-title text-[10px] font-medium text-text-secondary uppercase tracking-wider mb-1.5 flex justify-between items-center">
+    <div className="px-4 py-3 border-b border-border-light relative">
+      <div className="section-title text-[10px] font-medium text-text-secondary uppercase tracking-wider mb-2 flex justify-between items-center">
         <span>Compression</span>
         <button 
           className="w-4 h-4 rounded-full border border-border-secondary bg-bg-primary text-text-secondary text-[11px] font-medium cursor-pointer transition-all flex items-center justify-center hover:bg-bg-secondary hover:border-text-secondary"

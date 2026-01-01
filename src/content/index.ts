@@ -208,6 +208,26 @@ class AudioLift implements AudioLiftInstance {
     const setupAudio = () => {
       if (!document.contains(mediaElement)) return;
 
+      // CORS Fix: Required for Web Audio API to work with cross-origin sources (e.g., YouTube)
+      // Without this, the AudioContext may output silence (tainted).
+      if (!mediaElement.crossOrigin && mediaElement.src && !mediaElement.src.startsWith('blob:') && !mediaElement.src.startsWith('data:')) {
+        // We only set this for actual URLs. blobs often fail if modified.
+        // WARNING: This forces a reload of the media element.
+        try {
+          const wasPaused = mediaElement.paused;
+          // const currentTime = mediaElement.currentTime; // Unused
+          mediaElement.crossOrigin = "anonymous";
+          // We might need to reload, but usually setting the attribute is enough to trigger a fetch check on next play
+          // However, for already playing media, we might need to force a quick reload if it stops.
+          if (!wasPaused) {
+             // Some browsers require a re-load call
+             // mediaElement.load(); // This is too disruptive, let's try just setting it.
+          }
+        } catch (e) {
+          console.warn('AudioLift: Failed to set crossOrigin', e);
+        }
+      }
+
       try {
         console.log('AudioLift: Setting up audio graph for', mediaElement);
         if (!this.audioContext) {
@@ -220,6 +240,8 @@ class AudioLift implements AudioLiftInstance {
         } catch (e: any) {
           if (e.name === 'InvalidStateError') {
             console.warn('AudioLift: Element already connected. Skipping.');
+            // Even if connected, we might have lost our reference.
+            // But we can't reconnect it.
             return; 
           }
           throw e;

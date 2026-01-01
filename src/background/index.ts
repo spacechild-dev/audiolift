@@ -1,4 +1,5 @@
 import { AudioLiftSettings, defaultSettings } from '../types';
+import contentScriptPath from '../content/index?script';
 
 // AudioLift - Background Service Worker
 
@@ -145,7 +146,7 @@ chrome.runtime.onInstalled.addListener(async (details) => {
   }
   
   // Inject scripts on install/update as well
-  await injectContentScripts();
+  // await injectContentScripts();
 });
 
 // Auto-inject content script into existing tabs when the extension is enabled/started
@@ -163,10 +164,10 @@ async function injectContentScripts() {
           // Check if we can inject
           await chrome.scripting.executeScript({
             target: { tabId: tab.id },
-            files: ['src/content/index.ts'] // CRXJS handles the path resolution
+            files: [contentScriptPath]
           });
         } catch (err) {
-          // Ignore errors
+          // Ignore errors (e.g. script already injected or cannot access tab)
         }
       }
     }

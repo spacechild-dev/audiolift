@@ -2,9 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom Variables & Global Styles from legacy styles.css */
 :root {
-  /* Light mode (default) */
   --bg-primary: #fff;
   --bg-secondary: #f8f9fa;
   --bg-tertiary: #f1f3f4;
@@ -69,50 +67,62 @@ body.light-mode {
 body {
   @apply text-[13px] text-text-primary bg-bg-tertiary overflow-hidden m-0 p-0 font-sans;
   width: 100%;
-  min-width: 360px;
-  max-width: 480px;
   height: 100vh;
-  max-height: 100vh;
 }
 
-/* Custom Slider Styling (hard to do purely with Tailwind utilities) */
-.slider {
-  @apply w-full h-1 rounded-sm bg-border-primary outline-none cursor-pointer my-1 appearance-none;
-}
-
-.slider::-webkit-slider-thumb {
-  @apply appearance-none w-4 h-4 rounded-full bg-accent cursor-pointer transition-transform shadow-sm;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-}
-
-.slider::-webkit-slider-thumb:hover {
-  transform: scale(1.15);
-}
-
-.slider::-webkit-slider-thumb:active {
-  transform: scale(1.25);
-}
-
-.slider.vertical {
-  -webkit-appearance: slider-vertical;
-  writing-mode: bt-lr;
-  width: 3px;
-  height: 60px;
-  padding: 0;
-  background: var(--border-primary);
-}
-
-/* Scrollbar */
+/* Chrome-like Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
   background: var(--border-secondary);
-  border-radius: 3px;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-secondary);
+}
+
+/* Slider Styling */
+input[type=range] {
+  @apply w-full h-1 rounded-sm bg-border-primary outline-none cursor-pointer my-1 appearance-none;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  @apply appearance-none w-3.5 h-3.5 rounded-full bg-accent cursor-pointer transition-transform shadow-sm;
+  margin-top: -5px; /* Alignment fix */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+  @apply h-1 bg-border-primary rounded-sm;
+}
+
+input[type=range]:hover::-webkit-slider-thumb {
+  transform: scale(1.15);
+}
+
+input[type=range]:active::-webkit-slider-thumb {
+  transform: scale(1.25);
+}
+
+/* Vertical Slider specifically for EQ */
+input[type=range].vertical {
+  -webkit-appearance: slider-vertical;
+  writing-mode: bt-lr;
+  width: 4px;
+  height: 80px;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+}
+
+/* Hard constraint for logo to prevent "huge" rendering */
+.logo-fixed {
+  height: 24px !important;
+  width: auto !important;
+  max-width: 200px !important;
+  object-fit: contain;
 }

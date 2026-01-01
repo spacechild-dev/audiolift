@@ -17,12 +17,12 @@ function App() {
   } = useAudioSettings();
 
   return (
-    <div className="flex flex-col w-full h-screen bg-bg-primary overflow-hidden">
+    <div className="flex flex-col h-full bg-bg-primary">
       <Header enabled={settings.enabled} onToggle={(v) => updateSettings({ enabled: v })} />
       
       {settings.enabled && <AudioInfoPanel info={audioInfo} />}
 
-      <div className={`flex-1 overflow-y-auto overflow-x-hidden py-1 min-h-0 ${!settings.enabled ? 'opacity-50 pointer-events-none' : ''}`}>
+      <div className={`flex-1 overflow-y-auto scrollbar-thin ${!settings.enabled ? 'opacity-50 pointer-events-none grayscale' : ''}`}>
         <QuickTools settings={settings} updateSettings={updateSettings} />
         <PresetGrid activePreset={activePreset} onSelect={applyPreset} />
         <Equalizer settings={settings} updateSettings={updateSettings} disabled={settings.loudnessMode} />

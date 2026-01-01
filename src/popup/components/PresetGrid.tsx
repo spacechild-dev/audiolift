@@ -9,8 +9,8 @@ interface PresetGridProps {
 
 const PresetGrid: React.FC<PresetGridProps> = ({ activePreset, onSelect }) => {
   return (
-    <div className="p-3 border-b border-border-light">
-      <div className="flex justify-between items-center mb-1.5">
+    <div className="px-4 py-3 border-b border-border-light">
+      <div className="flex justify-between items-center mb-2">
         <div className="text-[10px] font-medium text-text-secondary uppercase tracking-wider">Presets</div>
       </div>
       <div className="grid grid-cols-[repeat(auto-fit,minmax(65px,1fr))] gap-1">
